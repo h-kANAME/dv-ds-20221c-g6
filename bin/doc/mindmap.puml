@@ -1,0 +1,34 @@
+@startmindmap
+Title Mapa mental de Tienda Ropita
+
+* Tienda Ropita
+** Prenda
+*** Tipos
+**** Saco
+**** Pantalones
+**** Camisas
+**** etc..
+*** Estados
+**** Nueva
+***** precio venta = precio base
+**** Promoción
+***** precio venta = precio base - valor fijo
+**** Liquidación
+***** precio venta =  precio base - 50% del precio base
+*** Precio Base
+*** Precio Venta, depende del estado
+** Venta
+*** Conjunto de Prendas
+**** Prenda
+***** Precio venta
+***** Cantidad
+*** Fecha
+*** Medio de Pago
+**** Efectivo
+**** Tarjeta
+***** Recargo de acuerdo a las cuotas
+****** (cantidad de cuotas * \nun coeficiente fijo + \n0.01 del valor de cada prenda)
+** Registrar ventas
+** ¿Monto de ventas de un día?
+
+@endmindmap
