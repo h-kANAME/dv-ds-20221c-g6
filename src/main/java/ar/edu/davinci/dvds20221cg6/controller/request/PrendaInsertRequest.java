@@ -1,4 +1,4 @@
-package controller.request;
+package ar.edu.davinci.dvds20221cg6.controller.request;
 
 import java.math.BigDecimal;
 
@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PrendaUpdateRequest {
-		
+public class PrendaInsertRequest {
+
 	private String descripcion;
-	
+
 	private String tipo;
-	
+
 	private BigDecimal precioBase;
 }
-

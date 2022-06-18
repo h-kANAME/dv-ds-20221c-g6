@@ -1,4 +1,4 @@
-package service;
+package ar.edu.davinci.dvds20221cg6.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import domain.Prenda;
-import exception.BusinessException;
-import repository.PrendaRepository;
+import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
+import ar.edu.davinci.dvds20221cg6.repository.PrendaRepository;
 
 import java.util.Optional;
 
@@ -26,17 +26,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PrendaServiceImplements implements PrendaService {
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaServiceImplements.class);
 
 	private PrendaRepository repository;
-	
+
 	@Autowired
 	public PrendaServiceImplements(final PrendaRepository repository) {
 		this.repository = repository;
 	}
-	
-	
+
+
 	@Override
 	public Prenda save(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Grabamos la prenda: " + prenda.toString());
@@ -81,7 +81,7 @@ public class PrendaServiceImplements implements PrendaService {
 	@Override
 	public List<Prenda> list() {
 		LOGGER.debug("Listado de todas las prendas");
-		
+
 		return repository.findAll();
 	}
 
@@ -89,7 +89,7 @@ public class PrendaServiceImplements implements PrendaService {
 	public Page<Prenda> list(Pageable pageable) {
 		LOGGER.debug("Listado de todas las prendas por páginas");
 		LOGGER.debug("Pageable: offset: " + pageable.getOffset() + ", pageSize: " + pageable.getPageSize() + " and pageNumber: " + pageable.getPageNumber());
-		
+
 		return repository.findAll(pageable);
 	}
 
@@ -97,6 +97,5 @@ public class PrendaServiceImplements implements PrendaService {
 	public long count() {
 		return repository.count();
 	}
-	
-}
 
+}
