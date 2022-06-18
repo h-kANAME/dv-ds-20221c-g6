@@ -10,5 +10,9 @@ public abstract class TiendaAppRest {
 	
 	// Configurar la url de la aplicación rest
 	// http://localhost:8090/tienda/api
+	public String Home() {
+		return "asdasd";
+	}
+	
 
 }

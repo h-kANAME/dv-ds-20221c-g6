@@ -52,7 +52,7 @@ public class OrikaConfiguration {
 			}
 		}).register();
 
-		// Retornameo la instancia del mapper factory
+		// Retornamos la instancia del mapper factory
 		return mapperFactory.getMapperFacade();
 	}
 
