@@ -1,7 +1,7 @@
-package domain;
+package ar.edu.davinci.dvds20221cg6.domain;
 
 public enum TipoPrenda {
-	
+
 	SACO("Saco"),
 	PANTALON("Pantalon"),
 	CAMISA("Camisa"),
@@ -10,13 +10,13 @@ public enum TipoPrenda {
 	CHAQUETA("Chaqueta"),
 	MEDIA("Media"),
 	BUFANDA("Bufanda");
-	
+
 	private String descripcion;
-	
+
 	private TipoPrenda(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
+
 	public String getDescripcion() {
 		return descripcion;
 	}
