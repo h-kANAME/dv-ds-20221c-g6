@@ -1,25 +1,82 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="utf-8" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
 <title>Tienda Ropita</title>
 </head>
+
 <body>
-	<div align="center">
-		<h1>Tienda Ropita</h1>
-		<h2>Menú Principal</h2>
-		<h3>2022 1C</h3>
-		
+
+
+
+	<div class="container my-5">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card text-center" width="30">
+					<h1 class="card-header bg-primary text-center text-white">Tienda Ropita</h1>
+					<ul class="col list-group list-group-flush">
+						<li class="list-group-item">
+							<a href="/tienda/prendas/list"
+								class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+								<img src="https://kyz.com.ar/clothes-rack.png" alt="twbs" width="32" height="32"
+									class="rounded-circle flex-shrink-0">
+								<div class="d-flex gap-2 w-100 justify-content-between">
+									<div>
+										<h6 class="mb-0">Listado de Prendas</h6>
+									</div>
+								</div>
+							</a>
+						</li>
+						<li class="list-group-item">
+							<a href="/tienda/clientes/list"
+								class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+								<img src="https://kyz.com.ar/target.png" alt="twbs" width="32" height="32"
+									class="rounded-circle flex-shrink-0">
+								<div class="d-flex gap-2 w-100 justify-content-between">
+									<div>
+										<h6 class="mb-0">Listado de Clientes</h6>
+									</div>
+								</div>
+							</a>
+						</li>
+						<li class="list-group-item">
+							<a href="/tienda/ventas/list"
+								class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+								<img src="https://kyz.com.ar/compras.png" alt="twbs" width="32" height="32"
+									class="rounded-circle flex-shrink-0">
+								<div class="d-flex gap-2 w-100 justify-content-between">
+									<div>
+										<h6 class="mb-0">Listado de Ventas</h6>
+									</div>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 	</div>
-	<br />
-	<div align="left">
-		<ul>
-			<li><a href="/tienda/prendas/list">Listado de prendas</a></li>
-			<li><a href="/tienda/clientes/list">Listado de clientes</a></li>
-			<li><a href="/tienda/ventas/list">Listado de ventas</a></li>
-		</ul>
-		<br />
-	</div>
+
+	<footer class="fixed-bottom">
+
+		<h3 class="text-center">2022 1C</h3>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+			crossorigin="anonymous"></script>
+
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"
+			integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk"
+			crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+			integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy"
+			crossorigin="anonymous"></script>
+	</footer>
 </body>
+
 </html>
