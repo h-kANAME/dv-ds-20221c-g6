@@ -1,3 +1,4 @@
+
 --
 -- Drop Table structure for table ventas_tarjeta
 --
@@ -53,7 +54,7 @@ CREATE TABLE prendas (
   prd_descripcion varchar(255) DEFAULT NULL,
   prd_precio_base decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
-  PRIMARY KEY (prd_id) 
+  PRIMARY KEY (prd_id)
 );
 
 --
