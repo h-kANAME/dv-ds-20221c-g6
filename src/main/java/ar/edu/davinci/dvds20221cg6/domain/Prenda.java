@@ -29,8 +29,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 
-public class Prenda implements Serializable {
+public class Prenda  implements Serializable {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 8791033026571491633L;
 
 	// Configurar por JPA cual el PK de la tabla prendas
@@ -41,15 +44,19 @@ public class Prenda implements Serializable {
 	// Configuramos por JPA el nombre de la columna
 	@Column(name = "prd_id")
 	private Long id;
-
+	
 	@Column(name = "prd_descripcion", nullable = false)
 	private String descripcion;
-
+	
 	@Column(name = "prd_tipo_prenda")
 	@Enumerated(EnumType.STRING)
 	private TipoPrenda tipo;
-
+	
 	@Column(name = "prd_precio_base")
 	private BigDecimal precioBase;
+	
+	public BigDecimal getPrecioFinal() {
+		return precioBase;
+	}
 
 }

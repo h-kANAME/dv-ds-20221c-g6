@@ -1,3 +1,4 @@
+
 --
 -- Drop Table structure for table ventas_tarjeta
 --
