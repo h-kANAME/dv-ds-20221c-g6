@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Crea un nuevo Prenda</title>
+</head>
+<body>
+	<div align="center">
+		<h1>Crear una nueva Prenda</h1>
+		<br />
+		<table>
+			<tbody>
+				<tr>
+					<th><a href="/tienda">Volver al menú pricipal</a></th>
+					<th>&nbsp;</th>
+					<th><a href="/tienda/prendas/list">Volver</a></th>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<form action="#" th:action="@{/tienda/prendas/save}"
+			th:object="${prenda}" method="post">
+
+			<table border="0" cellpadding="10">
+				<tr>
+					<td>Descripción:</td>
+					<td><input type="text" th:field="*{descripcion}" /></td>
+				</tr>
+				<tr>
+					<td>Tipo:</td>
+					<td th:object="${tipoPrendas}">
+					    <select id="tipo" name="tipo">
+					        <option value="">Elija un tipo</option>
+					        <option th:each="tipoPrenda : ${tipoPrendas}"
+					                th:value="${tipoPrenda}"
+					                th:text="${tipoPrenda.descripcion}">
+					        </option>
+					    </select>
+					</td>
+				</tr>
+				<tr>
+					<td>Precio Base:</td>
+					<td><input type="text" th:field="*{precioBase}" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button type="submit">Grabar</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

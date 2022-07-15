@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Administrador de Prendas</title>
+</head>
+<body>
+	<div align="center">
+		<h1>Listado de Prendas</h1>
+		<br />
+
+		<table>
+			<tbody>
+				<tr>
+					<th><a href="/tienda">Volver al menú pricipal</a></th>
+					<th>&nbsp;</th>
+					<th><a href="/tienda/prendas/new">Crear una nueva Prenda</a></th>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<div style = "display:flex;flex-direction:row">
+				<p> Page Number:  </p>
+				<p th:text="${pageNumber}">Page Number</p>
+				<br/>
+				<p> Total Pages:  </p>
+				<p th:text="${totalPages}">Total Pages</p>
+		</div>
+
+		<table border="1" cellpadding="10">
+			<thead>
+				<tr>
+					<th>Prenda ID</th>
+					<th>Descripción</th>
+					<th>Tipo</th>
+					<th>Precio Base</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+
+
+			<tbody>
+				<tr th:each="prenda : ${listPrendas}">
+					<td th:text="${prenda.id}">Prenda ID</td>
+					<td th:text="${prenda.descripcion}">Descripcion</td>
+					<td th:text="${prenda.tipo.descripcion}">Tipo</td>
+					<td th:text="${prenda.precioBase}">Precio Base</td>
+					<td><a th:href="@{'/tienda/prendas/edit/' + ${prenda.id}}">Editar</a>
+						&nbsp;&nbsp;&nbsp; <a
+						th:href="@{'/tienda/prendas/delete/' + ${prenda.id}}">Borrar</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
