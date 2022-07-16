@@ -65,6 +65,10 @@ public abstract class Venta implements Serializable {
 	@JoinColumn(name="vta_cli_id", referencedColumnName="cli_id", nullable = false)
 	private Cliente cliente;
 	
+	@ManyToOne(targetEntity = Negocio.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name="vta_ngo_id", referencedColumnName="ngo_id", nullable = false)
+	private Negocio negocio;
+	
 	@Column(name = "vta_fecha")
 	@Temporal(TemporalType.DATE)
 	private Date fecha;

@@ -18,7 +18,6 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
-import ar.edu.davinci.dvds20221cg6.controller.response.NegocioResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaEfectivoResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaTarjetaResponse;
@@ -26,7 +25,6 @@ import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaEfectivoCreateRe
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaItemCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaTarjetaCreateRequest;
 import ar.edu.davinci.dvds20221cg6.domain.Item;
-import ar.edu.davinci.dvds20221cg6.domain.Negocio;
 import ar.edu.davinci.dvds20221cg6.domain.VentaEfectivo;
 import ar.edu.davinci.dvds20221cg6.domain.VentaTarjeta;
 import ar.edu.davinci.dvds20221cg6.controller.request.ClienteInsertRequest;
