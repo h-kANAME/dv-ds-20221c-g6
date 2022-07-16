@@ -18,12 +18,15 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.NegocioResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaEfectivoResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.VentaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaTarjetaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaEfectivoCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaItemCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaTarjetaCreateRequest;
 import ar.edu.davinci.dvds20221cg6.domain.Item;
+import ar.edu.davinci.dvds20221cg6.domain.Negocio;
 import ar.edu.davinci.dvds20221cg6.domain.VentaEfectivo;
 import ar.edu.davinci.dvds20221cg6.domain.VentaTarjeta;
 import ar.edu.davinci.dvds20221cg6.controller.request.ClienteInsertRequest;
@@ -34,6 +37,7 @@ import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -119,6 +123,21 @@ public class OrikaConfiguration {
 				itemResponse.setImporte(item.importe());
 			}
 		}).register();
+		
+		//NEGOCIO
+		
+		mapperFactory.classMap(Negocio.class, NegocioResponse.class)
+		.customize(new CustomMapper<Negocio, NegocioResponse>() {
+			public void mapAtoB(final Negocio ngo, final NegocioResponse ngoResponse, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for Negocio --> NegocioResponse #### ");
+				
+				ngoResponse.setVentas(null);
+			}
+		}).register();
+		
+		
+		
+		
 		
 		// VENTA EFECTIVO
 		
@@ -293,7 +312,7 @@ public class OrikaConfiguration {
             }
         }).register();
         
-  
+        
 		
 		// Retornameo la instancia del mapper factory
 		return mapperFactory.getMapperFacade();
