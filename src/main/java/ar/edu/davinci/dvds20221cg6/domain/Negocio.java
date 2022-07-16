@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 import lombok.experimental.SuperBuilder;
 
 //Configuración inicial de JPA de la entidad prendas
@@ -58,6 +59,7 @@ public class Negocio implements Serializable{
 	
 	@OneToMany(mappedBy="negocio", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
+	@Singular
 	private List<Venta> ventas;
 	
 	public BigDecimal calcuarGananciaPorDia(Date dia) {
