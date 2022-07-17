@@ -71,6 +71,7 @@ public class OrikaConfiguration {
 				prendaResponse.setId(prenda.getId());
 				prendaResponse.setDescripcion(prenda.getDescripcion());
 				prendaResponse.setTipo(prenda.getTipo().getDescripcion());
+				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
 			}
 		}).register();

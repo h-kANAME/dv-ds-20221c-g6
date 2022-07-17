@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
@@ -104,6 +105,13 @@ public class PrendaServiceImplements implements PrendaService {
 	public List<TipoPrenda> getTipoPrendas() {
 		// TODO Auto-generated method stub
 		return TipoPrenda.getTipoPrendas();
+	}
+
+
+	@Override
+	public List<EstadoPrenda> getEstadoPrendas() {
+		// TODO Auto-generated method stub
+		return EstadoPrenda.getEstadoPrendas();
 	}
 
 }
