@@ -10,7 +10,7 @@ import ar.edu.davinci.dvds20221cg6.domain.Prenda;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 
-public interface PrendaService {
+public interface PrendaService{
 	
 	// Métodos de negocio sobre la entida Prenda
 

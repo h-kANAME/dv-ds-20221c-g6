@@ -1,4 +1,9 @@
 --
+-- Drop Table structure for table negocio
+--
+DROP TABLE IF EXISTS negocio;
+
+--
 -- Drop Table structure for table ventas_tarjeta
 --
 
@@ -33,6 +38,12 @@ DROP TABLE IF EXISTS prendas;
 --
 DROP TABLE IF EXISTS clientes;
 
+
+CREATE TABLE negocio (
+	ngo_id bigint NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (ngo_id)
+);
+
 --
 -- Table structure for table clientes
 --
@@ -66,9 +77,11 @@ CREATE TABLE ventas (
   tipo_venta varchar(31) NOT NULL,
   vta_fecha datetime(6) DEFAULT NULL,
   vta_cli_id bigint NOT NULL,
+  vta_ngo_id bigint NOT NULL,
   PRIMARY KEY (vta_id),
   --KEY vta_cli_fk (vta_cli_id),
-  CONSTRAINT vta_cli_fk FOREIGN KEY (vta_cli_id) REFERENCES clientes (cli_id)
+  CONSTRAINT vta_cli_fk FOREIGN KEY (vta_cli_id) REFERENCES clientes (cli_id),
+  CONSTRAINT vta_ngo_fk FOREIGN KEY (vta_ngo_id) REFERENCES negocio (ngo_id)
 );
 
 --
