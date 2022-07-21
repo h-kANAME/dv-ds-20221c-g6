@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 
 // Configuración inical de JPA de una entidad
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="prendas")
 
 // Configuración de Lombok
@@ -63,7 +62,10 @@ public class Prenda  implements Serializable {
 	@Column(name = "prd_precio_base")
 	private BigDecimal precioBase;
 	
-	public BigDecimal getPrecioFinal() {
+	@Column(name = "prd_precio_final")
+	private BigDecimal precioFinal;
+	
+	public BigDecimal getPrecioBase() {
 		return precioBase;
 	}
 	

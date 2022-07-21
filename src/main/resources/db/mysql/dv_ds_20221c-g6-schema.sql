@@ -32,9 +32,10 @@ DROP TABLE IF EXISTS negocio;
 --
 -- Drop Table structure for table prendas
 --
-
+DROP TABLE IF EXISTS prendas_promocion;
+DROP TABLE IF EXISTS prendas_liquidacion;
+DROP TABLE IF EXISTS prendas_nueva;
 DROP TABLE IF EXISTS prendas;
-
 --
 -- Drop Table structure for table clientes
 --
@@ -63,8 +64,42 @@ CREATE TABLE prendas (
   prd_id bigint NOT NULL AUTO_INCREMENT,
   prd_descripcion varchar(255) DEFAULT NULL,
   prd_precio_base decimal(19,2) DEFAULT NULL,
+  prd_precio_final decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
+  prd_estado_prenda varchar(255) DEFAULT NULL,
   PRIMARY KEY (prd_id)
+);
+
+--
+-- Table structure for table prenda promocion
+--
+
+CREATE TABLE prendas_promocion (
+  prd_id bigint NOT NULL AUTO_INCREMENT,
+  prd_descuento decimal(19,2) DEFAULT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_prom_fk FOREIGN KEY (prd_id) REFERENCES prendas (prd_id)
+);
+
+--
+-- Table structure for table prendas nueva
+--
+
+CREATE TABLE prendas_nueva (
+  prd_id bigint NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_new_fk FOREIGN KEY (prd_id) REFERENCES prendas (prd_id)
+);
+
+--
+-- Table structure for table prendas liquidacion
+--
+
+CREATE TABLE prendas_liquidacion (
+  prd_id bigint NOT NULL AUTO_INCREMENT,
+  prd_porcentaje decimal(19,2) DEFAULT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_liq_fk FOREIGN KEY (prd_id) REFERENCES prendas (prd_id)
 );
 
 --

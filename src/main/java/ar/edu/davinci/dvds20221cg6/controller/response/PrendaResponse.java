@@ -23,5 +23,7 @@ public class PrendaResponse {
 	private String estado;
 
 	private BigDecimal precioBase;
+	
+	private BigDecimal precioFinal;
 
 }

@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public interface EstadoPrendaStrategy {
 	
-	public BigDecimal obtenerPrecioVenta(BigDecimal precioBase);
+	public void obtenerPrecioVenta(Prenda prenda);
 }

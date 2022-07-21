@@ -1,5 +1,6 @@
 package ar.edu.davinci.dvds20221cg6.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.StrategyFactory;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.repository.PrendaRepository;
@@ -30,12 +33,14 @@ import org.springframework.stereotype.Service;
 public class PrendaServiceImplements implements PrendaService {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaServiceImplements.class);
-
+	
 	private PrendaRepository repository;
+	private StrategyFactory strategyFactory;
 
 	@Autowired
-	public PrendaServiceImplements(final PrendaRepository repository) {
+	public PrendaServiceImplements(final PrendaRepository repository, final StrategyFactory strategy) {
 		this.repository = repository;
+		this.strategyFactory = strategy;
 	}
 
 
@@ -112,6 +117,12 @@ public class PrendaServiceImplements implements PrendaService {
 	public List<EstadoPrenda> getEstadoPrendas() {
 		// TODO Auto-generated method stub
 		return EstadoPrenda.getEstadoPrendas();
+	}
+	
+	@Override
+	public BigDecimal precioFinal(Prenda prenda) {
+		EstadoPrendaStrategy estadoStrategy = strategyFactory.getStrategy(prenda.getEstado());
+		return prenda.getPrecioBase();
 	}
 
 }
