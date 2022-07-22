@@ -48,6 +48,8 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda save(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Grabamos la prenda: " + prenda.toString());
 		if (prenda.getId() == null) {
+			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
+			strategy.obtenerPrecioVenta(prenda);
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede crear la prenda con un id específico.");
@@ -57,6 +59,8 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda update(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Modificamos la prenda: " + prenda.toString());
 		if (prenda.getId() != null) {
+			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
+			strategy.obtenerPrecioVenta(prenda);
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede modificar una prenda que aún no fue creada.");
@@ -118,11 +122,6 @@ public class PrendaServiceImplements implements PrendaService {
 		// TODO Auto-generated method stub
 		return EstadoPrenda.getEstadoPrendas();
 	}
-	
-	@Override
-	public BigDecimal precioFinal(Prenda prenda) {
-		EstadoPrendaStrategy estadoStrategy = strategyFactory.getStrategy(prenda.getEstado());
-		return prenda.getPrecioBase();
-	}
+
 
 }

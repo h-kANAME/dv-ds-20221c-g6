@@ -38,7 +38,4 @@ public interface PrendaService{
 	// Devuelve los estados de prendas
 	List<EstadoPrenda> getEstadoPrendas();
 	
-	
-	public BigDecimal precioFinal(Prenda prenda);
-	
 }

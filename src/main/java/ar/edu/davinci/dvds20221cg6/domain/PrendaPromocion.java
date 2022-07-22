@@ -29,9 +29,10 @@ public class PrendaPromocion implements Serializable, EstadoPrendaStrategy{
 	public void obtenerPrecioVenta(Prenda prenda) {
 		// TODO Auto-generated method stub
 		prenda.setEstado(EstadoPrenda.PROMOCION);
-		BigDecimal precioFinal = prenda.getPrecioBase()
+		BigDecimal resta = prenda.getPrecioBase()
 								.multiply(new BigDecimal(descuento))
 								.divide(new BigDecimal(100));
+		BigDecimal precioFinal = prenda.getPrecioBase().subtract(resta);
 		prenda.setPrecioFinal(precioFinal);
 	}
 

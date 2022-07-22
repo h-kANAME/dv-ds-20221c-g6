@@ -60,7 +60,7 @@ public class Item implements Serializable {
 	
 	
 	public BigDecimal importe() {
-		return prenda.getPrecioBase().multiply(new BigDecimal(cantidad));
+		return prenda.getPrecioFinal().multiply(new BigDecimal(cantidad));
 	}
 
 	
