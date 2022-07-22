@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -73,10 +72,9 @@ public abstract class Venta implements Serializable {
 	@OneToMany(mappedBy="venta", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Item> items;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+
+	@ManyToOne(targetEntity = Negocio.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	@JoinColumn(name="vta_ngo_id", referencedColumnName="ngo_id", nullable = false)
-	@JsonBackReference
 	private Negocio negocio;
  	
 	public abstract Double conRecargo(Double importeBase);

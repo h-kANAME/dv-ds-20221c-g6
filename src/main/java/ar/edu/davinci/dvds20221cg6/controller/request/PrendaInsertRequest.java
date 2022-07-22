@@ -16,6 +16,8 @@ public class PrendaInsertRequest {
 	private String descripcion;
 
 	private String tipo;
+	
+	private String estado;
 
 	private BigDecimal precioBase;
 }

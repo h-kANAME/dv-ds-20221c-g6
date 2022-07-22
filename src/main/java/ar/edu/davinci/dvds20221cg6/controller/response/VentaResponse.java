@@ -22,4 +22,5 @@ public abstract class VentaResponse {
 	
 	private BigDecimal importeFinal;
 
+
 }

@@ -18,7 +18,6 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
-import ar.edu.davinci.dvds20221cg6.controller.response.NegocioResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaEfectivoResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaTarjetaResponse;
@@ -75,7 +74,9 @@ public class OrikaConfiguration {
 				prendaResponse.setId(prenda.getId());
 				prendaResponse.setDescripcion(prenda.getDescripcion());
 				prendaResponse.setTipo(prenda.getTipo().getDescripcion());
+				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
+				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
 			}
 		}).register();
 		
@@ -122,22 +123,7 @@ public class OrikaConfiguration {
 				itemResponse.setPrenda(prendaResponse);
 				itemResponse.setImporte(item.importe());
 			}
-		}).register();
-		
-		//NEGOCIO
-		
-		mapperFactory.classMap(Negocio.class, NegocioResponse.class)
-		.customize(new CustomMapper<Negocio, NegocioResponse>() {
-			public void mapAtoB(final Negocio ngo, final NegocioResponse ngoResponse, final MappingContext context) {
-				LOGGER.info(" #### Custom mapping for Negocio --> NegocioResponse #### ");
-				
-				ngoResponse.setVentas(null);
-			}
-		}).register();
-		
-		
-		
-		
+		}).register();		
 		
 		// VENTA EFECTIVO
 		

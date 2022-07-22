@@ -1,12 +1,7 @@
 package ar.edu.davinci.dvds20221cg6.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Date;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -28,15 +22,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Singular;
-import lombok.experimental.SuperBuilder;
 
-//Configuración inicial de JPA de la entidad prendas
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="negocio")
 
-//Configuración de lombok
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -59,12 +49,5 @@ public class Negocio implements Serializable{
 	
 	@OneToMany(mappedBy="negocio", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
-	@Singular
 	private List<Venta> ventas;
-	
-	public BigDecimal calcuarGananciaPorDia(Date dia) {
-		Double suma = ventas.stream()
-				.collect(Collectors.summingDouble(venta -> venta.esDeFecha(dia) ? venta.importeFinal().doubleValue() : 0.0 ));
-		return new BigDecimal(suma).setScale(2, RoundingMode.UP);
-	};
 }

@@ -50,6 +50,7 @@ public class PrendaController extends TiendaApp {
 		Prenda prenda = new Prenda();
 		model.addAttribute("prenda", prenda);
 		model.addAttribute("tipoPrendas", prendaService.getTipoPrendas());
+		model.addAttribute("estadoPrendas", prendaService.getEstadoPrendas());
 
 		LOGGER.info("prendas: " + prenda.toString());
 
@@ -88,6 +89,7 @@ public class PrendaController extends TiendaApp {
 			
 			mav.addObject("prenda", prenda);
 			mav.addObject("tipoPrendaActual", prenda.getTipo());
+			mav.addObject("estadoPrendaActual", prenda.getEstado());
 
 		} catch (BusinessException e) {
 			LOGGER.error("ERROR AL TRAER LA PRENDA");
@@ -95,6 +97,7 @@ public class PrendaController extends TiendaApp {
 		}
 		
 		mav.addObject("tipoPrendas", prendaService.getTipoPrendas());
+		mav.addObject("estadoPrendas", prendaService.getEstadoPrendas());
 		return mav;
 	}
 	

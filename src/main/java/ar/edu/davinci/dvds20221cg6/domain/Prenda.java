@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -52,11 +55,18 @@ public class Prenda  implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private TipoPrenda tipo;
 	
+	@Column(name = "prd_estado_prenda")
+	@Enumerated(EnumType.STRING)
+	private EstadoPrenda estado;
+	
 	@Column(name = "prd_precio_base")
 	private BigDecimal precioBase;
 	
-	public BigDecimal getPrecioFinal() {
+	@Column(name = "prd_precio_final")
+	private BigDecimal precioFinal;
+	
+	public BigDecimal getPrecioBase() {
 		return precioBase;
 	}
-
+	
 }
