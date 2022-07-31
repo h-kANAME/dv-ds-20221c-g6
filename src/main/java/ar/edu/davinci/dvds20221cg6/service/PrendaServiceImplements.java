@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.domain.StrategyFactory;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
@@ -35,12 +36,16 @@ public class PrendaServiceImplements implements PrendaService {
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaServiceImplements.class);
 	
 	private PrendaRepository repository;
+	private StockService stockService;
 	private StrategyFactory strategyFactory;
 
 	@Autowired
-	public PrendaServiceImplements(final PrendaRepository repository, final StrategyFactory strategy) {
+	public PrendaServiceImplements(final PrendaRepository repository, 
+									final StrategyFactory strategy,
+									final StockService stockService) {
 		this.repository = repository;
 		this.strategyFactory = strategy;
+		this.stockService = stockService;
 	}
 
 
@@ -50,6 +55,7 @@ public class PrendaServiceImplements implements PrendaService {
 		if (prenda.getId() == null) {
 			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
 			strategy.obtenerPrecioVenta(prenda);
+			prenda.setStock(stockService.save(new Stock()));
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede crear la prenda con un id específico.");

@@ -198,6 +198,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 			prendaModificar.setTipo(prendaNuevo.getTipo());
 			prendaModificar.setEstado(prendaNuevo.getEstado());
 			prendaModificar.setPrecioBase(prendaNuevo.getPrecioBase());
+			
 			// Grabar el Prenda Nuevo en Prenda a Modificar
 			try {
 				prendaModificar = service.update(prendaModificar);

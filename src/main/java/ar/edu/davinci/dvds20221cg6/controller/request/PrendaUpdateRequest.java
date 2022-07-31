@@ -20,4 +20,6 @@ public class PrendaUpdateRequest {
 	private String estado;
 
 	private BigDecimal precioBase;
+	
+	private Long stockId;
 }

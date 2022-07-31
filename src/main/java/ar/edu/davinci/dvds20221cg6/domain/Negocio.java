@@ -1,6 +1,8 @@
 package ar.edu.davinci.dvds20221cg6.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -25,14 +27,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="negocio")
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class Negocio implements Serializable{/**
+public class Negocio implements Serializable{
+	
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7379621577015231497L;
+	private static final long serialVersionUID = -3929492102236150035L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
@@ -44,4 +48,9 @@ public class Negocio implements Serializable{/**
 	@JsonManagedReference
 	private List<Venta> ventas;
 	
+	public BigDecimal calcularGananciaPorDia(Date dia) {
+		BigDecimal gananciaXDia = new BigDecimal(0.0);
+		ventas.stream().forEach(v -> {if(v.esDeFecha(dia)) { gananciaXDia.add(v.importeFinal());}});
+		return gananciaXDia;
+	}
 }

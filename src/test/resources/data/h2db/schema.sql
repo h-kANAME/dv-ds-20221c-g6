@@ -24,12 +24,6 @@ DROP TABLE IF EXISTS venta_items;
 DROP TABLE IF EXISTS ventas;
 
 --
--- Drop Table structure for table negocio
---
-
-DROP TABLE IF EXISTS negocio;
-
---
 -- Drop Table structure for table prendas
 --
 
@@ -45,6 +39,12 @@ DROP TABLE IF EXISTS clientes;
 CREATE TABLE negocio (
 	ngo_id bigint NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (ngo_id)
+);
+
+CREATE TABLE stocks (
+	stk_id bigint NOT NULL AUTO_INCREMENT,
+	stk_cantidad tinyint DEFAULT 0,
+    PRIMARY KEY (stk_id)
 );
 
 CREATE TABLE clientes (
@@ -65,7 +65,9 @@ CREATE TABLE prendas (
   prd_precio_final decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
   prd_estado_prenda varchar(255) DEFAULT NULL,
-  PRIMARY KEY (prd_id)
+  prd_stock_id bigint DEFAULT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_stk_fk FOREIGN KEY (prd_stock_id) REFERENCES stocks (stk_id)
 );
 
 

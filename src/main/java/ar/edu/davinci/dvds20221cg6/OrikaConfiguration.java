@@ -33,7 +33,9 @@ import ar.edu.davinci.dvds20221cg6.domain.Cliente;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.StockResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -57,6 +59,10 @@ public class OrikaConfiguration {
 		// Instanciando un mapper factory por default
 		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 		
+		//STOCK
+		mapperFactory.classMap(Stock.class, StockResponse.class).byDefault().register();
+		
+		
 		
 		// PRENDA
 		
@@ -74,6 +80,11 @@ public class OrikaConfiguration {
 				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
 				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
+				StockResponse stock = StockResponse.builder()
+						.id(prenda.getStock().getId())
+						.cantidad(prenda.getCantidad())
+						.build();
+				prendaResponse.setStock(stock);
 			}
 		}).register();
 		
