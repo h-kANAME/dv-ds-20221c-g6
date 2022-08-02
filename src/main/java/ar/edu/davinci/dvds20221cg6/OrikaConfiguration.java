@@ -63,11 +63,6 @@ public class OrikaConfiguration {
 		
 		
 		// PRENDA
-		
-		//mapperFactory.classMap(Prenda.class, PrendaInsertRequest.class).byDefault().register();
-		//mapperFactory.classMap(Prenda.class, PrendaUpdateRequest.class).byDefault().register();
-
-//		mapperFactory.classMap(Prenda.class, PrendaResponse.class).byDefault().register();
 		mapperFactory.classMap(Prenda.class, PrendaResponse.class)
 		.customize(new CustomMapper<Prenda, PrendaResponse>() {
 			public void mapAtoB(final Prenda prenda, final PrendaResponse prendaResponse, final MappingContext context) {
