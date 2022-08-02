@@ -21,5 +21,4 @@ public class PrendaUpdateRequest {
 
 	private BigDecimal precioBase;
 	
-	private BigDecimal precioFinal;
 }

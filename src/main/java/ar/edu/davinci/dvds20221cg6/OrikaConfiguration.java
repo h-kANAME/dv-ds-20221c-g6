@@ -31,10 +31,12 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ClienteInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ClienteUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ClienteResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Cliente;
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
@@ -62,8 +64,8 @@ public class OrikaConfiguration {
 		
 		// PRENDA
 		
-		mapperFactory.classMap(Prenda.class, PrendaInsertRequest.class).byDefault().register();
-		mapperFactory.classMap(Prenda.class, PrendaUpdateRequest.class).byDefault().register();
+		//mapperFactory.classMap(Prenda.class, PrendaInsertRequest.class).byDefault().register();
+		//mapperFactory.classMap(Prenda.class, PrendaUpdateRequest.class).byDefault().register();
 
 //		mapperFactory.classMap(Prenda.class, PrendaResponse.class).byDefault().register();
 		mapperFactory.classMap(Prenda.class, PrendaResponse.class)
@@ -76,6 +78,34 @@ public class OrikaConfiguration {
 				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
 				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
+			}
+		}).register();
+		
+		mapperFactory.classMap(PrendaInsertRequest.class, Prenda.class)
+		.customize(new CustomMapper<PrendaInsertRequest, Prenda>() {
+			public void mapAtoB(final PrendaInsertRequest prendaInsertRequest, final Prenda prenda, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for prendaInsertRequest --> Prenda #### ");
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
+				prenda.setDescripcion(prendaInsertRequest.getDescripcion());
+				prenda.setPrecioBase(prendaInsertRequest.getPrecioBase());
+				prenda.setTipo(tipoPrenda);
+				prenda.setEstado(estadoPrenda);
+				
+				
+			}
+		}).register();
+		
+		mapperFactory.classMap(PrendaUpdateRequest.class, Prenda.class)
+		.customize(new CustomMapper<PrendaUpdateRequest, Prenda>() {
+			public void mapAtoB(final PrendaUpdateRequest prendaUpdateRequest, final Prenda prenda, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for prendaUpdateRequest --> Prenda #### ");
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
+				prenda.setDescripcion(prendaUpdateRequest.getDescripcion());
+				prenda.setPrecioBase(prendaUpdateRequest.getPrecioBase());
+				prenda.setTipo(tipoPrenda);
+				prenda.setEstado(estadoPrenda);
 			}
 		}).register();
 		
