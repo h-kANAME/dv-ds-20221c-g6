@@ -1,4 +1,6 @@
-package ar.edu.davinci.dvds20221cg6.controller.request;
+package ar.edu.davinci.dvds20221cg6.controller.response;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VentaEfectivoRequest {
+public class NegocioResponse {
+	private Long id;
 	
-	private Long clienteId;
-	
-	private Long negocioId;
-	
+	private List<VentaResponse> ventas;
 }
-

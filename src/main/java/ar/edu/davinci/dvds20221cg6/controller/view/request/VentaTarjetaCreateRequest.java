@@ -16,6 +16,8 @@ public class VentaTarjetaCreateRequest {
 	private String fecha; 
 
 	private Integer cantidadCuotas;
+	
+	private Long negocioId;
 
 }
 

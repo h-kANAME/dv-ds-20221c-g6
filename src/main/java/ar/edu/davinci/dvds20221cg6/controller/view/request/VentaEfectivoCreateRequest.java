@@ -14,5 +14,7 @@ public class VentaEfectivoCreateRequest {
 	private Long clienteId;
 	
 	private String fecha; 
+	
+	private Long negocioId;
 }
 
