@@ -18,22 +18,28 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.NegocioResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaEfectivoResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.VentaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.response.VentaTarjetaResponse;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaEfectivoCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaItemCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaTarjetaCreateRequest;
 import ar.edu.davinci.dvds20221cg6.domain.Item;
+import ar.edu.davinci.dvds20221cg6.domain.Negocio;
 import ar.edu.davinci.dvds20221cg6.domain.VentaEfectivo;
 import ar.edu.davinci.dvds20221cg6.domain.VentaTarjeta;
 import ar.edu.davinci.dvds20221cg6.controller.request.ClienteInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ClienteUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ClienteResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Cliente;
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
+import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -59,11 +65,6 @@ public class OrikaConfiguration {
 		
 		
 		// PRENDA
-		
-		mapperFactory.classMap(Prenda.class, PrendaInsertRequest.class).byDefault().register();
-		mapperFactory.classMap(Prenda.class, PrendaUpdateRequest.class).byDefault().register();
-
-//		mapperFactory.classMap(Prenda.class, PrendaResponse.class).byDefault().register();
 		mapperFactory.classMap(Prenda.class, PrendaResponse.class)
 		.customize(new CustomMapper<Prenda, PrendaResponse>() {
 			public void mapAtoB(final Prenda prenda, final PrendaResponse prendaResponse, final MappingContext context) {
@@ -71,9 +72,43 @@ public class OrikaConfiguration {
 				prendaResponse.setId(prenda.getId());
 				prendaResponse.setDescripcion(prenda.getDescripcion());
 				prendaResponse.setTipo(prenda.getTipo().getDescripcion());
+				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
+				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
 			}
 		}).register();
+		
+		mapperFactory.classMap(PrendaInsertRequest.class, Prenda.class)
+		.customize(new CustomMapper<PrendaInsertRequest, Prenda>() {
+			public void mapAtoB(final PrendaInsertRequest prendaInsertRequest, final Prenda prenda, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for prendaInsertRequest --> Prenda #### ");
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
+				prenda.setDescripcion(prendaInsertRequest.getDescripcion());
+				prenda.setPrecioBase(prendaInsertRequest.getPrecioBase());
+				prenda.setTipo(tipoPrenda);
+				prenda.setEstado(estadoPrenda);
+				
+				
+			}
+		}).register();
+		
+		mapperFactory.classMap(PrendaUpdateRequest.class, Prenda.class)
+		.customize(new CustomMapper<PrendaUpdateRequest, Prenda>() {
+			public void mapAtoB(final PrendaUpdateRequest prendaUpdateRequest, final Prenda prenda, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for prendaUpdateRequest --> Prenda #### ");
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
+				prenda.setDescripcion(prendaUpdateRequest.getDescripcion());
+				prenda.setPrecioBase(prendaUpdateRequest.getPrecioBase());
+				prenda.setTipo(tipoPrenda);
+				prenda.setEstado(estadoPrenda);
+			}
+		}).register();
+		
+		//NEGOCIO
+		
+		mapperFactory.classMap(Negocio.class, NegocioResponse.class).byDefault().register();
 		
 		// CLIENTE
 
@@ -118,7 +153,7 @@ public class OrikaConfiguration {
 				itemResponse.setPrenda(prendaResponse);
 				itemResponse.setImporte(item.importe());
 			}
-		}).register();
+		}).register();		
 		
 		// VENTA EFECTIVO
 		
@@ -129,7 +164,11 @@ public class OrikaConfiguration {
 				Cliente cliente = Cliente.builder()
 						.id(ventaEfectivoRequest.getClienteId())
 						.build();
+				Negocio negocio = Negocio.builder()
+						.id(ventaEfectivoRequest.getNegocioId())
+						.build();
 				venta.setCliente(cliente);
+				venta.setNegocio(negocio);
 			}
 		}).register();
 		
@@ -144,8 +183,13 @@ public class OrikaConfiguration {
 						.apellido(venta.getCliente().getApellido())
 						.build();
 				
+				NegocioResponse negocio = NegocioResponse.builder()
+						.id(venta.getNegocio().getId())
+						.build();
+				
 				ventaResponse.setId(venta.getId());
 				ventaResponse.setCliente(cliente);
+				ventaResponse.setNegocio(negocio);
 
 				DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
 				String fechaStr = formatearFecha.format(venta.getFecha());
@@ -183,7 +227,11 @@ public class OrikaConfiguration {
 				Cliente cliente = Cliente.builder()
 						.id(ventaTarjetaRequest.getClienteId())
 						.build();
+				Negocio negocio = Negocio.builder()
+						.id(ventaTarjetaRequest.getNegocioId())
+						.build();
 				venta.setCliente(cliente);
+				venta.setNegocio(negocio);
 				venta.setCantidadCuotas(ventaTarjetaRequest.getCantidadCuotas());
 			}
 		}).register();
@@ -199,8 +247,13 @@ public class OrikaConfiguration {
 						.apellido(venta.getCliente().getApellido())
 						.build();
 				
+				NegocioResponse negocio = NegocioResponse.builder()
+						.id(venta.getNegocio().getId())
+						.build();
+				
 				ventaResponse.setId(venta.getId());
 				ventaResponse.setCliente(cliente);
+				ventaResponse.setNegocio(negocio);
 
 				DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
 				String fechaStr = formatearFecha.format(venta.getFecha());
@@ -240,7 +293,11 @@ public class OrikaConfiguration {
                 Cliente cliente = Cliente.builder()
                         .id(ventaEfectivoRequest.getClienteId())
                         .build();
+                Negocio negocio = Negocio.builder()
+                		.id(ventaEfectivoRequest.getNegocioId())
+                		.build();
                 venta.setCliente(cliente);
+                venta.setNegocio(negocio);
         		DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
                 Date fecha;
 				try {
@@ -263,7 +320,11 @@ public class OrikaConfiguration {
                 Cliente cliente = Cliente.builder()
                         .id(ventaTarjetaRequest.getClienteId())
                         .build();
+                Negocio negocio = Negocio.builder()
+                		.id(ventaTarjetaRequest.getNegocioId())
+                		.build();
                 venta.setCliente(cliente);
+                venta.setNegocio(negocio);
                 venta.setCantidadCuotas(ventaTarjetaRequest.getCantidadCuotas());
         		DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
                 Date fecha;
@@ -293,7 +354,7 @@ public class OrikaConfiguration {
             }
         }).register();
         
-  
+        
 		
 		// Retornameo la instancia del mapper factory
 		return mapperFactory.getMapperFacade();

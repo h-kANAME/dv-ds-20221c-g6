@@ -19,7 +19,11 @@ public class PrendaResponse {
 	private String descripcion;
 
 	private String tipo;
+	
+	private String estado;
 
 	private BigDecimal precioBase;
+	
+	private BigDecimal precioFinal;
 
 }

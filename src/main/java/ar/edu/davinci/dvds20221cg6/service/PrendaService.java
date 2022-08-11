@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 
-public interface PrendaService {
+public interface PrendaService{
 	
 	// Métodos de negocio sobre la entida Prenda
 
@@ -31,6 +32,8 @@ public interface PrendaService {
 	
 	// Devuelve los tipos de prendas
 	List<TipoPrenda> getTipoPrendas();
-
+	
+	// Devuelve los estados de prendas
+	List<EstadoPrenda> getEstadoPrendas();
 	
 }

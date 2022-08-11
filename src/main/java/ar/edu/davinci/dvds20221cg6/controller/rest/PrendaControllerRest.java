@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.PrendaService;
 import ma.glasnost.orika.MapperFacade;
 
-
+@CrossOrigin("*")
 @RestController
 public class PrendaControllerRest extends TiendaAppRest {
 
@@ -171,7 +172,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 	public ResponseEntity<Object> updatePrenda(@PathVariable("id") long id,
 			@RequestBody PrendaUpdateRequest datosPrenda) {
 
-		Prenda prendaModifar = null;
+		Prenda prendaModificar = null;
 		Prenda prendaNuevo = null;
 		PrendaResponse prendaResponse = null;
 
@@ -185,7 +186,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 
 		try {
 
-			prendaModifar = service.findById(id);
+			prendaModificar = service.findById(id);
 
 		} catch (BusinessException e) {
 			LOGGER.error(e.getMessage());
@@ -193,13 +194,15 @@ public class PrendaControllerRest extends TiendaAppRest {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 
-		if (Objects.nonNull(prendaModifar)) {
-			prendaModifar.setDescripcion(prendaNuevo.getDescripcion());
-			prendaModifar.setTipo(prendaNuevo.getTipo());
-			prendaModifar.setPrecioBase(prendaNuevo.getPrecioBase());
+		if (Objects.nonNull(prendaModificar)) {
+			prendaModificar.setDescripcion(prendaNuevo.getDescripcion());
+			prendaModificar.setTipo(prendaNuevo.getTipo());
+			prendaModificar.setEstado(prendaNuevo.getEstado());
+			prendaModificar.setPrecioBase(prendaNuevo.getPrecioBase());
+			prendaModificar.setPrecioFinal(prendaNuevo.getPrecioFinal());
 			// Grabar el Prenda Nuevo en Prenda a Modificar
 			try {
-				prendaModifar = service.update(prendaModifar);
+				prendaModificar = service.update(prendaModificar);
 			} catch (BusinessException e) {
 				LOGGER.error(e.getMessage());
 				e.printStackTrace();
@@ -219,7 +222,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 
 		// Convertir Prenda en PrendaResponse
 		try {
-			prendaResponse = mapper.map(prendaModifar, PrendaResponse.class);
+			prendaResponse = mapper.map(prendaModificar, PrendaResponse.class);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();

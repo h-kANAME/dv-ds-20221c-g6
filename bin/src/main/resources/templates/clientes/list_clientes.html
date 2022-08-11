@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Administrador de Clientes</title>
+</head>
+<body>
+	<div align="center">
+		<h1>Listado de Clientes</h1>
+		<br />
+
+		<table>
+			<tbody>
+				<tr>
+					<th><a href="/tienda">Volver al menú pricipal</a></th>
+					<th>&nbsp;</th>
+					<th><a href="/tienda/clientes/new">Crear un nuevo Cliente</a></th>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<table border="1" cellpadding="10">
+			<thead>
+				<tr>
+					<th>Cliente ID</th>
+					<th>Nombre</th>
+					<th>Apellido</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="cliente : ${listClientes}">
+					<td th:text="${cliente.id}">Cliente ID</td>
+					<td th:text="${cliente.nombre}">Nombre</td>
+					<td th:text="${cliente.apellido}">Apellido</td>
+					<td><a th:href="@{'/tienda/clientes/edit/' + ${cliente.id}}">Editar</a>
+						&nbsp;&nbsp;&nbsp; <a
+						th:href="@{'/tienda/clientes/delete/' + ${cliente.id}}">Borrar</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

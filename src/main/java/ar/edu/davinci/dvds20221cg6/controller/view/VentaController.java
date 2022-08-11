@@ -130,9 +130,7 @@ public class VentaController extends TiendaApp {
 	public String saveVentaEfectivo(@ModelAttribute("venta") VentaEfectivoCreateRequest datosVenta) {
 		LOGGER.info("POST - saveVenta - /ventas/efectivo/save");
 		LOGGER.info("datosVenta: " + datosVenta.toString());
-		
         VentaEfectivo venta = mapper.map(datosVenta, VentaEfectivo.class);
-
         // Grabar el nuevo Venta
         try {
             venta = ventaService.save(venta);

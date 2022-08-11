@@ -16,10 +16,13 @@ public abstract class VentaResponse {
 	
 	private ClienteResponse cliente;
 	
+	private NegocioResponse negocio;
+	
 	private String fecha;
 	
 	private List<ItemResponse> items;
 	
 	private BigDecimal importeFinal;
+
 
 }
