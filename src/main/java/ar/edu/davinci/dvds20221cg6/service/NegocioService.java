@@ -19,5 +19,11 @@ public interface NegocioService {
 	
 	Page<Negocio> list(Pageable pageable);
 	
+	List<Negocio> list();
+	
+	void delete(Long id)throws BusinessException;
+	
 	public List<Venta> getVentas(List<Venta> requestVentas) throws BusinessException;
+	
+	public Boolean existVenta(Long negocioId, Long ventaId) throws BusinessException;
 }

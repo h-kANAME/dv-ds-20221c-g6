@@ -43,6 +43,9 @@ public class Negocio implements Serializable{/**
 	@Column(name = "ngo_id")
 	private Long id;
 	
+	@Column(name = "ngo_name", nullable = false)
+	private String name;
+	
 	@OneToMany(mappedBy="negocio", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Venta> ventas;
@@ -68,7 +71,10 @@ public class Negocio implements Serializable{/**
 		if (this.ventas == null) {
 			this.ventas = new ArrayList<Venta>();
 		}
+		
 		this.ventas.add(venta);
+		
+	
 	}
 
 }

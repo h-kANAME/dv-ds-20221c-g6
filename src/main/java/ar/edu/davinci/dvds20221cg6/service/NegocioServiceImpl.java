@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +21,7 @@ import ar.edu.davinci.dvds20221cg6.repository.NegocioRepository;
 
 @Service
 public class NegocioServiceImpl implements NegocioService{
-	
+	private final Logger LOGGER = LoggerFactory.getLogger(ClienteServiceImpl.class);
 	private final NegocioRepository negocioRepository;
 	private final ClienteService clienteService;
 	
@@ -33,17 +35,11 @@ public class NegocioServiceImpl implements NegocioService{
 	@Override
 	public Negocio save(Negocio negocio) throws BusinessException {
 		// TODO Auto-generated method stub
-		List<Venta> ventas = new ArrayList<Venta>();
-		
-		if(negocio.getVentas() != null) {
-			ventas = getVentas(negocio.getVentas());
+		if(negocio.getId() == null) {
+			return negocioRepository.save(negocio);
 		}
 		
-		negocio = Negocio.builder()
-				.ventas(ventas)
-				.build();
-		
-		return negocioRepository.save(negocio);
+		throw new BusinessException("No se puede crear el negocio con un id específico.");
 	}
 
 	@Override
@@ -55,15 +51,6 @@ public class NegocioServiceImpl implements NegocioService{
 		
 		throw new BusinessException("No se encontró el negocio por el id: " + id);
 	}
-	
-	private Negocio getNegocio(Long negocioId)throws BusinessException {
-		Optional<Negocio> negocioOptional = negocioRepository.findById(negocioId);
-		if(negocioOptional.isPresent()) {
-			return negocioOptional.get();
-		}else {
-			throw new BusinessException("Negocio no encontrado");
-		}
-	}
 
 	@Override
 	public Page<Negocio> list(Pageable pageable) {
@@ -71,7 +58,10 @@ public class NegocioServiceImpl implements NegocioService{
 		return negocioRepository.findAll(pageable);
 	}
 	
-	
+	@Override
+	public List<Negocio> list(){
+		return negocioRepository.findAll();
+	}
 
 	@Override
 	public List<Venta> getVentas(List<Venta> requestVentas) throws BusinessException {
@@ -90,6 +80,19 @@ public class NegocioServiceImpl implements NegocioService{
 		}
 		
 		return ventas;
+	}
+	
+	@Override
+	public void delete(Long id) throws BusinessException {
+		LOGGER.debug("Borrando el negocio con el id: " + id);
+		negocioRepository.deleteById(id);
+	}
+	
+	@Override
+	public Boolean existVenta(Long negocioId, Long ventaId) throws BusinessException {
+		Negocio negocio = findById(negocioId);
+		Boolean existVenta = negocio.getVentas().stream().anyMatch(v -> v.getId() == ventaId);
+		return existVenta;
 	}
 	
 	private VentaTarjeta getVentaTarjeta(VentaTarjeta requestVentaTarjeta) {

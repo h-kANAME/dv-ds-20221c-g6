@@ -101,6 +101,7 @@ public class VentaServiceImpl implements VentaService {
 		
 		venta = ventaEfectivoRepository.save(venta);
 		
+		
 		negocio.addVenta(venta);
 		negocioRepository.save(negocio);
 		
@@ -150,6 +151,8 @@ public class VentaServiceImpl implements VentaService {
 		venta = ventaTarjetaRepository.save(venta);
 		negocio.addVenta(venta);
 		negocioRepository.save(negocio);
+		
+		
 		return venta;
 	}
 

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
@@ -108,7 +109,24 @@ public class OrikaConfiguration {
 		
 		//NEGOCIO
 		
-		mapperFactory.classMap(Negocio.class, NegocioResponse.class).byDefault().register();
+		mapperFactory.classMap(Negocio.class, NegocioResponse.class)
+		.customize(new CustomMapper<Negocio, NegocioResponse>(){
+			public void mapAtoB(final Negocio negocio, final NegocioResponse negocioResponse, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for Negocio --> NegocioResponse #### ");
+				
+				negocioResponse.setId(negocio.getId());
+				negocioResponse.setName(negocio.getName());
+			
+			}
+		}).register();
+		
+		mapperFactory.classMap(NegocioInsertRequest.class, Negocio.class)
+		.customize(new CustomMapper<NegocioInsertRequest, Negocio>() {
+			public void mapAtoB(final NegocioInsertRequest negocioInsertRequest, final Negocio negocio, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for negocioInsertRequest --> Negocio #### ");
+				negocio.setName(negocioInsertRequest.getName());
+			}
+		}).register();
 		
 		// CLIENTE
 
@@ -185,6 +203,7 @@ public class OrikaConfiguration {
 				
 				NegocioResponse negocio = NegocioResponse.builder()
 						.id(venta.getNegocio().getId())
+						.name(venta.getNegocio().getName())
 						.build();
 				
 				ventaResponse.setId(venta.getId());
@@ -249,6 +268,7 @@ public class OrikaConfiguration {
 				
 				NegocioResponse negocio = NegocioResponse.builder()
 						.id(venta.getNegocio().getId())
+						.name(venta.getNegocio().getName())
 						.build();
 				
 				ventaResponse.setId(venta.getId());

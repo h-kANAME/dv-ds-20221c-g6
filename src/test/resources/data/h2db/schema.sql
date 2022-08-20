@@ -53,6 +53,7 @@ CREATE TABLE clientes (
 
 CREATE TABLE negocio (
   ngo_id bigint NOT NULL AUTO_INCREMENT,
+  ngo_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (ngo_id)
 );
 
