@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,10 +114,25 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<Negocio, NegocioResponse>(){
 			public void mapAtoB(final Negocio negocio, final NegocioResponse negocioResponse, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for Negocio --> NegocioResponse #### ");
-				
+							
 				negocioResponse.setId(negocio.getId());
 				negocioResponse.setName(negocio.getName());
+				negocioResponse.setVentas(new ArrayList<VentaResponse>());
+				
+				for(Venta venta: negocio.getVentas()) {
+					if(venta instanceof VentaTarjeta) {
+						VentaTarjetaResponse tarjetaResponse = null;
+						tarjetaResponse.setId(venta.getId());
+						negocioResponse.getVentas().add(tarjetaResponse);
+					}else if(venta instanceof VentaEfectivo) {
+						VentaEfectivoResponse efectivoResponse = null;
+						efectivoResponse.setId(venta.getId());
+						negocioResponse.getVentas().add(efectivoResponse);
+						
+					}
 			
+				}
+				
 			}
 		}).register();
 		

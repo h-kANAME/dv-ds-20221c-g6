@@ -1,5 +1,6 @@
 package ar.edu.davinci.dvds20221cg6.controller.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class NegocioControllerRest extends TiendaAppRest{
 	private NegocioService service;
 	
 	@GetMapping(path = "/negocios/all")
-	public List<Negocio> getListAl(){
+	public List<Negocio> getListAll(){
 		LOGGER.info("listar todas los negocios");
 		return service.list();
 	}
@@ -75,6 +76,7 @@ public class NegocioControllerRest extends TiendaAppRest{
 		
 		try {
 			negocio = service.findById(id);
+			negocio.setVentas(negocio.getVentas());
 		}catch(BusinessException e) {
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();
@@ -93,6 +95,34 @@ public class NegocioControllerRest extends TiendaAppRest{
 		
 		return new ResponseEntity<>(negocioResponse, HttpStatus.OK);
 	}
+	
+	/*@GetMapping(path = "/negocios/{id}/profit/{dia}")
+	public ResponseEntity<Object> getNegocio(@PathVariable Long id, @PathVariable String dia){
+		LOGGER.info("lista al negocio solicitado");
+		
+		NegocioResponse negocioResponse = null;
+		Negocio negocio = null;
+		
+		try {
+			negocio = service.findById(id);
+		}catch(BusinessException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		try {
+			negocioResponse = mapper.map(negocio, NegocioResponse.class);
+		}catch(Exception e){
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(negocioResponse, HttpStatus.OK);
+	}*/
 	
 	@PostMapping(path = "/negocio")
 	public ResponseEntity<NegocioResponse> createNegocio(@RequestBody NegocioInsertRequest datosNegocio){

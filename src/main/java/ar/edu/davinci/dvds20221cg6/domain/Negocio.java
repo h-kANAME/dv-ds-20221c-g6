@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -50,11 +51,20 @@ public class Negocio implements Serializable{/**
 	@JsonManagedReference
 	private List<Venta> ventas;
 	
-	public BigDecimal calcularGananciaPorDia(Date dia) {
-		BigDecimal gananciaXDia = new BigDecimal(0.0);
-		ventas.stream().forEach(v -> {if(v.esDeFecha(dia)) { gananciaXDia.add(v.importeFinal());}});
+	/*public BigDecimal calcularGananciaPorDia(Date dia) {
+			
+		BigDecimal gananciaXDia = getVentasDelDia(dia).stream()
+				.map(v -> v.importeFinal())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+	
 		return gananciaXDia;
-	}
+	}*/
+	
+	/*public List<Venta> getVentasDelDia(Date dia){
+		return ventas.stream()
+				.filter(v -> v.esDeFecha(dia))
+				.collect(Collectors.toList());
+	}*/
 	
 	public BigDecimal calcularGananciaTotal() {
 		BigDecimal  gananciaTotal = ventas.stream()
@@ -63,9 +73,13 @@ public class Negocio implements Serializable{/**
 		return gananciaTotal;
 	}
 	
-	public String calcularGananciaTotalStr() {
+	public String getGananciaTotalStr() {
 		return calcularGananciaTotal().toString();
 	}
+	
+	/*public String getGananciaTotalPorDiaStr(Date dia) {
+		return calcularGananciaPorDia(dia).toString();
+	}*/
 	
 	public void addVenta(Venta venta) {
 		if (this.ventas == null) {
