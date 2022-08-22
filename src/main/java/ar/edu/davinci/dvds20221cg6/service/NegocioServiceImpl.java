@@ -121,4 +121,11 @@ public class NegocioServiceImpl implements NegocioService{
 		return clienteService.findById(id);
 	}
 
+	@Override
+	public Negocio addVenta(Long negocioId, Venta venta) throws BusinessException {
+		Negocio negocio = negocioRepository.getById(negocioId);
+		negocio.addVenta(venta);
+		return negocioRepository.save(negocio);
+	}
+
 }

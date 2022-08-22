@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioDateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.NegocioInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
