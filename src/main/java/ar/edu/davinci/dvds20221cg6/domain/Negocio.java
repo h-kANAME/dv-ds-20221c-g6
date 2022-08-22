@@ -51,20 +51,20 @@ public class Negocio implements Serializable{/**
 	@JsonManagedReference
 	private List<Venta> ventas;
 	
-	/*public BigDecimal calcularGananciaPorDia(Date dia) {
+	public BigDecimal calcularGananciaPorDia(Date dia) {
 			
 		BigDecimal gananciaXDia = getVentasDelDia(dia).stream()
 				.map(v -> v.importeFinal())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 	
 		return gananciaXDia;
-	}*/
+	}
 	
-	/*public List<Venta> getVentasDelDia(Date dia){
+	public List<Venta> getVentasDelDia(Date dia){
 		return ventas.stream()
 				.filter(v -> v.esDeFecha(dia))
 				.collect(Collectors.toList());
-	}*/
+	}
 	
 	public BigDecimal calcularGananciaTotal() {
 		BigDecimal  gananciaTotal = ventas.stream()
@@ -77,9 +77,9 @@ public class Negocio implements Serializable{/**
 		return calcularGananciaTotal().toString();
 	}
 	
-	/*public String getGananciaTotalPorDiaStr(Date dia) {
+	public String getGananciaTotalPorDiaStr(Date dia) {
 		return calcularGananciaPorDia(dia).toString();
-	}*/
+	}
 	
 	public void addVenta(Venta venta) {
 		if (this.ventas == null) {

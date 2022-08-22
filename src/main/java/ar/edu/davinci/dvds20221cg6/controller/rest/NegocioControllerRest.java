@@ -76,7 +76,6 @@ public class NegocioControllerRest extends TiendaAppRest{
 		
 		try {
 			negocio = service.findById(id);
-			negocio.setVentas(negocio.getVentas());
 		}catch(BusinessException e) {
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();
