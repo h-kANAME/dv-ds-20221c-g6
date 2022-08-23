@@ -18,6 +18,7 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ItemInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.NegocioDateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.NegocioInsertRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
@@ -190,6 +191,14 @@ public class OrikaConfiguration {
 			public void mapAtoB(final NegocioInsertRequest negocioInsertRequest, final Negocio negocio, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for negocioInsertRequest --> Negocio #### ");
 				negocio.setName(negocioInsertRequest.getName());
+			}
+		}).register();
+		
+		mapperFactory.classMap(NegocioUpdateRequest.class, Negocio.class)
+		.customize(new CustomMapper<NegocioUpdateRequest, Negocio>() {
+			public void mapAtoB(final NegocioUpdateRequest negocioUpdateRequest, final Negocio negocio, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for negocioInsertRequest --> Negocio #### ");
+				negocio.setName(negocioUpdateRequest.getName());
 			}
 		}).register();
 		

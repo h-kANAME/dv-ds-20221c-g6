@@ -123,9 +123,29 @@ public class NegocioServiceImpl implements NegocioService{
 
 	@Override
 	public Negocio addVenta(Long negocioId, Venta venta) throws BusinessException {
-		Negocio negocio = negocioRepository.getById(negocioId);
+		Negocio negocio = getNegocio(negocioId);
 		negocio.addVenta(venta);
 		return negocioRepository.save(negocio);
+	}
+	
+	@Override
+	public Negocio getNegocio(Long id) throws BusinessException{
+		Optional<Negocio> negocioOptional = negocioRepository.findById(id);
+		if(negocioOptional.isPresent()) {
+			return negocioOptional.get();
+		}else {
+			throw new BusinessException("Negocio no encotrado para el id: " + id);
+		}
+	}
+
+	@Override
+	public Negocio update(Negocio negocio) throws BusinessException {
+		// TODO Auto-generated method stub
+		LOGGER.debug("Modificamos el Negocio: " + negocio.toString());
+		if(negocio.getId() != null) {
+			return negocioRepository.save(negocio);
+		}
+		throw new BusinessException("No se puede modificar un negocio que aún no fue creada.");
 	}
 
 }

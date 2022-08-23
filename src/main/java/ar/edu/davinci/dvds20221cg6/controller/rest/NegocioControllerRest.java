@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.davinci.dvds20221cg6.Constantes;
 import ar.edu.davinci.dvds20221cg6.controller.request.NegocioDateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.NegocioInsertRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.NegocioResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Negocio;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
@@ -160,6 +163,60 @@ public class NegocioControllerRest extends TiendaAppRest{
 		}
 		
 		return new ResponseEntity<>(negocioResponse, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/negocios/{id}")
+	public ResponseEntity<Object> updateNegocio(@PathVariable("id") Long id, @RequestBody NegocioUpdateRequest datosNegocio){
+		Negocio negocioModificar = null;
+		Negocio negocioNuevo = null;
+		NegocioResponse negocioResponse = null;
+		
+		try {
+			negocioNuevo = mapper.map(datosNegocio, Negocio.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		try {
+			negocioModificar = service.findById(id);
+		}catch(BusinessException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+		if(Objects.nonNull(negocioModificar)) {
+			negocioModificar.setName(negocioNuevo.getName());
+			
+			try {
+				negocioModificar  = service.update(negocioModificar);
+			}catch(BusinessException e) {
+				LOGGER.error(e.getMessage());
+				e.printStackTrace();
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+			}catch(Exception e) {
+				LOGGER.error(e.getMessage());
+
+				e.printStackTrace();
+
+				return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+			}
+		}else {
+			LOGGER.error("Negocio a modificar es null");
+
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		
+		try {
+			negocioResponse = mapper.map(negocioModificar, NegocioResponse.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(negocioResponse, HttpStatus.CREATED);
+		
 	}
 	
 	@DeleteMapping("/negocios/{id}")

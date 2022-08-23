@@ -18,17 +18,16 @@ DROP TABLE IF EXISTS ventas_efectivo;
 DROP TABLE IF EXISTS venta_items;
 
 --
--- Drop Table structure for table negocio
---
-
-DROP TABLE IF EXISTS negocio;
-
---
 -- Drop Table structure for table ventas
 --
 
 DROP TABLE IF EXISTS ventas;
 
+--
+-- Drop Table structure for table negocio
+--
+
+DROP TABLE IF EXISTS negocio;
 
 --
 -- Drop Table structure for table prendas

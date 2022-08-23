@@ -17,7 +17,11 @@ public interface NegocioService {
 	
 	Negocio findById(Long id)throws BusinessException;
 	
+	Negocio update(Negocio negocio) throws BusinessException;
+	
 	Negocio addVenta(Long negocioId, Venta venta) throws BusinessException;
+	
+	Negocio getNegocio(Long id) throws BusinessException;
 	
 	Page<Negocio> list(Pageable pageable);
 	
