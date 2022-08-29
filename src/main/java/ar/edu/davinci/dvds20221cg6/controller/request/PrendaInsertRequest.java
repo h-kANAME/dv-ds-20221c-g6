@@ -2,6 +2,7 @@ package ar.edu.davinci.dvds20221cg6.controller.request;
 
 import java.math.BigDecimal;
 
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,7 @@ public class PrendaInsertRequest {
 	private String estado;
 
 	private BigDecimal precioBase;
+	
+	private Stock stock;
 	
 }

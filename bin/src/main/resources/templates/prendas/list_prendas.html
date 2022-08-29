@@ -34,7 +34,9 @@
 					<th>Prenda ID</th>
 					<th>Descripción</th>
 					<th>Tipo</th>
+					<th>Estado</th>
 					<th>Precio Base</th>
+					<th>Precio Final</th>
 					<th>Acciones</th>
 				</tr>
 			</thead>
@@ -45,7 +47,9 @@
 					<td th:text="${prenda.id}">Prenda ID</td>
 					<td th:text="${prenda.descripcion}">Descripcion</td>
 					<td th:text="${prenda.tipo.descripcion}">Tipo</td>
+					<td th:text="${prenda.estado.descripcion}">Estado</td>
 					<td th:text="${prenda.precioBase}">Precio Base</td>
+					<td th:text="${prenda.precioFinal}">Precio Final</td>
 					<td><a th:href="@{'/tienda/prendas/edit/' + ${prenda.id}}">Editar</a>
 						&nbsp;&nbsp;&nbsp; <a
 						th:href="@{'/tienda/prendas/delete/' + ${prenda.id}}">Borrar</a></td>

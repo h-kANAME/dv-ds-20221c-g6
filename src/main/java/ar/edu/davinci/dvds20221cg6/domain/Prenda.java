@@ -3,16 +3,20 @@ package ar.edu.davinci.dvds20221cg6.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -65,8 +69,24 @@ public class Prenda  implements Serializable {
 	@Column(name = "prd_precio_final")
 	private BigDecimal precioFinal;
 	
+	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinColumn(name="prd_stock_id", referencedColumnName="stock_id", nullable = false)
+	private Stock stock;
+	
 	public BigDecimal getPrecioBase() {
 		return precioBase;
+	}
+	
+	public Integer getCantidad() {
+		return stock.getCantidad();
+	}
+
+	public void agregarStock(Integer cantidad) {
+		stock.agregarStock(cantidad);
+	}
+	
+	public void setCantidad(Integer cantidad) {
+		stock.setCantidad(cantidad);
 	}
 	
 }

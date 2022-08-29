@@ -155,9 +155,7 @@ public class VentaServiceImpl implements VentaService {
 
 	@Override
 	public VentaTarjeta save(VentaTarjeta ventaTarjeta, Item item) throws BusinessException {
-
 		ventaTarjeta.addItem(item);
-		
 		return ventaTarjetaRepository.save(ventaTarjeta);
 	}
 
@@ -179,23 +177,19 @@ public class VentaServiceImpl implements VentaService {
 		if (itemOptional.isPresent()) {
 			return itemOptional.get();
 		}
-		
 		throw new BusinessException("No se encotró la venta por el id: " + id);
 	}
 
 	@Override
 	public List<Venta> list() {
 		LOGGER.debug("Listado de todas las ventas");
-
 		return ventaRepository.findAll();
 	}
 
 	@Override
 	public Page<Venta> list(Pageable pageable) {
-		
 		LOGGER.debug("Listado de todas las ventas por páginas");
 		LOGGER.debug("Pageable: offset: " + pageable.getOffset() + ", pageSize: " + pageable.getPageSize() + " and pageNumber: " + pageable.getPageNumber());
-		
 		return ventaRepository.findAll(pageable);
 	}
 
@@ -206,48 +200,38 @@ public class VentaServiceImpl implements VentaService {
 
 	@Override
 	public Venta addItem(Long ventaId, Item item) throws BusinessException {
-		
 		Venta venta = getVenta(ventaId);
-		
 		Prenda prenda = getPrenda(item);
 		Item newItem = Item.builder()
 				.cantidad(item.getCantidad())
 				.prenda(prenda)
 				.venta(venta)
 				.build();
-		
-		newItem = itemService.save(newItem);
-		
-		venta.addItem(newItem);
-				
-		return venta;
+		if (newItem.getCantidad()<= newItem.getPrenda().getCantidad()) {
+			newItem = itemService.save(newItem);
+			venta.addItem(newItem);
+			return venta;
+		}else {
+			throw new BusinessException("La cantidad ingresada es mayor a la del stock actual: " + ventaId);
+		}
 	}
 
 	@Override
 	public Venta updateItem(Long ventaId, Long itemId, Item item) throws BusinessException {
 		Venta venta = getVenta(ventaId);
-		
 		Item actualItem = getItem(itemId);
-		
 		actualItem.setCantidad(item.getCantidad());
-		
 		actualItem = itemService.update(actualItem);
-		
 		return venta;
 	}
 
 	@Override
 	public Venta deleteItem(Long ventaId, Long itemId) throws BusinessException {
 		Venta venta = getVenta(ventaId);
-		
 		Item actualItem = getItem(itemId);
-		
 		itemService.delete(itemId);
-		
 		venta.getItems().remove(actualItem);
-		
 		ventaRepository.save(venta);
-		
 		return venta;
 	}
 	

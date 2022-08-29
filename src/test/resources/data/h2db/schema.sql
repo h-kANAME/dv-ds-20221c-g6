@@ -29,6 +29,12 @@ DROP TABLE IF EXISTS negocio;
 
 DROP TABLE IF EXISTS ventas;
 
+--
+-- Drop Table structure for table stock
+--
+
+DROP TABLE IF EXISTS stock;
+
 
 --
 -- Drop Table structure for table prendas
@@ -57,6 +63,15 @@ CREATE TABLE negocio (
 );
 
 --
+-- Table structure for table stock
+--
+CREATE TABLE stock (
+  stock_id bigint NOT NULL AUTO_INCREMENT,
+  prd_cantidad int DEFAULT 0 NOT NULL,
+  PRIMARY KEY (stock_id)
+);
+
+--
 -- Table structure for table prendas
 --
 
@@ -67,7 +82,9 @@ CREATE TABLE prendas (
   prd_precio_final decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
   prd_estado_prenda varchar(255) DEFAULT NULL,
-  PRIMARY KEY (prd_id)
+  prd_stock_id bigint NOT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_stock_fk FOREIGN KEY (prd_stock_id) REFERENCES stock (stock_id)
 );
 
 

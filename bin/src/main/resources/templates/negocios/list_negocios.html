@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Negocio</title>
+</head>
+<body>
+	<div align="center">
+		<h1>Crear un nuevo Negocio</h1>
+		<br />
+		<form action="#" th:action="@{/tienda/negocios/save}"
+			th:object="${negocio}" method="post">
+
+			<table border="0" cellpadding="10">
+				<tr>
+					<td colspan="2"><button type="submit">Crear Nuevo Negocio</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div align="center">
+		<h1>Listado de Negocios</h1>
+		<br />
+		
+		<table>
+			<tbody>
+				<tr>
+					<th><a href="/tienda">Volver al menú principal</a></th>
+					<th>&nbsp;</th>
+				</tr>
+				<br />
+				<table border="1" cellpadding="10">
+					<thead>
+						<tr>
+							<th>Negocio</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="negocio : ${listNegocios}">
+							<td th:text="${negocio.id}">Negocio</td>
+	
+								<td><a th:href="@{'/tienda/negocios/profit/' + ${negocio.id}}">Ganancias</a>
+								&nbsp;&nbsp;&nbsp;
+						</tr>
+					</tbody>
+				</table>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>
