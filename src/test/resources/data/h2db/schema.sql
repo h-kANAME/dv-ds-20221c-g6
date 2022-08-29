@@ -18,23 +18,24 @@ DROP TABLE IF EXISTS ventas_efectivo;
 DROP TABLE IF EXISTS venta_items;
 
 --
--- Drop Table structure for table negocio
---
-
-DROP TABLE IF EXISTS negocio;
-
---
 -- Drop Table structure for table ventas
 --
 
 DROP TABLE IF EXISTS ventas;
 
 --
+<<<<<<< HEAD
 -- Drop Table structure for table stock
 --
 
 DROP TABLE IF EXISTS stock;
 
+=======
+-- Drop Table structure for table negocio
+--
+
+DROP TABLE IF EXISTS negocio;
+>>>>>>> refs/heads/test
 
 --
 -- Drop Table structure for table prendas
@@ -59,6 +60,7 @@ CREATE TABLE clientes (
 
 CREATE TABLE negocio (
   ngo_id bigint NOT NULL AUTO_INCREMENT,
+  ngo_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (ngo_id)
 );
 

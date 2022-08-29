@@ -39,8 +39,6 @@ public class VentaServiceImpl implements VentaService {
 	
 	private final VentaTarjetaRepository ventaTarjetaRepository;
 	
-	private final NegocioRepository negocioRepository;
-	
 	private final ClienteService clienteService;
 
 	private final PrendaService prendaService;
@@ -57,8 +55,7 @@ public class VentaServiceImpl implements VentaService {
 			final ClienteService clienteService,
 			final PrendaService prendaService,
 			final ItemService itemService,
-			final NegocioService negocioService,
-			final NegocioRepository negocioRepository) {
+			final NegocioService negocioService) {
 		this.ventaRepository = ventaRepository;
 		this.ventaEfectivoRepository = ventaEfectivoRepository;
 		this.ventaTarjetaRepository = ventaTarjetaRepository;
@@ -66,7 +63,6 @@ public class VentaServiceImpl implements VentaService {
 		this.prendaService = prendaService;
 		this.itemService = itemService;
 		this.negocioService = negocioService;
-		this.negocioRepository = negocioRepository;
 
 	}
 
@@ -101,8 +97,8 @@ public class VentaServiceImpl implements VentaService {
 		
 		venta = ventaEfectivoRepository.save(venta);
 		
-		negocio.addVenta(venta);
-		negocioRepository.save(negocio);
+		
+		negocioService.addVenta(negocio.getId(), venta);
 		
 		return venta;
 
@@ -148,8 +144,9 @@ public class VentaServiceImpl implements VentaService {
 				.build();
 		
 		venta = ventaTarjetaRepository.save(venta);
-		negocio.addVenta(venta);
-		negocioRepository.save(negocio);
+
+		negocioService.addVenta(negocio.getId(), venta);
+		
 		return venta;
 	}
 

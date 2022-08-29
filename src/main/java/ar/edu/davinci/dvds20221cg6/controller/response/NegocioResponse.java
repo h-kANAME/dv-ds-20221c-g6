@@ -1,5 +1,6 @@
 package ar.edu.davinci.dvds20221cg6.controller.response;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,9 @@ import lombok.NoArgsConstructor;
 public class NegocioResponse {
 	private Long id;
 	
+	private String name;
+	
 	private List<VentaResponse> ventas;
+	
+	private BigDecimal gananciaTotal;
 }

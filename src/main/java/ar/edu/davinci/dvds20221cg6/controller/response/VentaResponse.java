@@ -16,9 +16,9 @@ public abstract class VentaResponse {
 	
 	private ClienteResponse cliente;
 	
-	private NegocioResponse negocio;
-	
 	private String fecha;
+	
+	private Long idNegocio;
 	
 	private List<ItemResponse> items;
 	

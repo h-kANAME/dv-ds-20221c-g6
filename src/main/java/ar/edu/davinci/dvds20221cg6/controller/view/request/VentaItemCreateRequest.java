@@ -16,6 +16,7 @@ public class VentaItemCreateRequest {
 	private Integer cantidad;
 
 	private Long prendaId;
+	
 
 }
 
