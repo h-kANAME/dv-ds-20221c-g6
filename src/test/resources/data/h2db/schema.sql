@@ -24,18 +24,18 @@ DROP TABLE IF EXISTS venta_items;
 DROP TABLE IF EXISTS ventas;
 
 --
-<<<<<<< HEAD
+
 -- Drop Table structure for table stock
 --
 
 DROP TABLE IF EXISTS stock;
 
-=======
+
 -- Drop Table structure for table negocio
 --
 
 DROP TABLE IF EXISTS negocio;
->>>>>>> refs/heads/test
+
 
 --
 -- Drop Table structure for table prendas
