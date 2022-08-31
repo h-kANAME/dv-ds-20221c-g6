@@ -16,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -70,8 +69,24 @@ public class Prenda  implements Serializable {
 	@Column(name = "prd_precio_final")
 	private BigDecimal precioFinal;
 	
+	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinColumn(name="prd_stock_id", referencedColumnName="stock_id", nullable = false)
+	private Stock stock;
+	
 	public BigDecimal getPrecioBase() {
 		return precioBase;
+	}
+	
+	public Integer getCantidad() {
+		return stock.getCantidad();
+	}
+
+	public void agregarStock(Integer cantidad) {
+		stock.agregarStock(cantidad);
+	}
+	
+	public void setCantidad(Integer cantidad) {
+		stock.setCantidad(cantidad);
 	}
 	
 }

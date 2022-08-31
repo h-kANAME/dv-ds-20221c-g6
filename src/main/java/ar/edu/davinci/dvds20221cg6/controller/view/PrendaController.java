@@ -18,17 +18,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import ar.edu.davinci.dvds20221cg6.controller.TiendaApp;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.PrendaService;
+import ar.edu.davinci.dvds20221cg6.service.StockService;
 
 @Controller
 public class PrendaController extends TiendaApp {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaController.class);
-
 	
 	@Autowired
 	private PrendaService prendaService;
+	
+	@Autowired
+	private StockService stockService;
 	
 	@GetMapping(path = "/prendas/list")
 	public String showPrendaPage(Model model) {
@@ -108,5 +112,36 @@ public class PrendaController extends TiendaApp {
 		prendaService.delete(prendaId);
 		return "redirect:/tienda/prendas/list";
 	}
+	
+	@RequestMapping(value = "/prendas/stock/{id}", method = RequestMethod.GET)
+	public ModelAndView showEditStockPage(@PathVariable(name = "id") Long prendaId) {
+		LOGGER.info("GET - showEditStockPage - /stock/{id}");
+		LOGGER.info("Prenda a agregar stock: " + prendaId);
+		ModelAndView mav = new ModelAndView("prendas/agregar_stock_prendas");
+		Prenda prenda = null;
+		try {
+			prenda = prendaService.findById(prendaId);
+			prenda.setCantidad(0);
+			mav.addObject("prenda", prenda);
+		} catch (BusinessException e) {
+			LOGGER.error("ERROR AL TRAER LA STOCK");
+			e.printStackTrace();
+		}
+		return mav;
+	}
 
+	@PostMapping(value = "prendas/stock/agregar/{id}")
+	public String agregarStock(@ModelAttribute("prenda") Prenda prenda) {
+		LOGGER.info("POST - agregarStock - /prendas/stock/agregar");
+		LOGGER.info("stock: " + prenda.getCantidad().toString());
+		try {
+			Stock stock = stockService.findById(prenda.getStock().getId());
+			stock.agregarStock(prenda.getStock().getCantidad());
+			stockService.update(stock);
+		} catch (BusinessException e) {
+			LOGGER.error("ERROR AL TRAER LA STOCK");
+			e.printStackTrace();
+		}
+		return "redirect:/tienda/prendas/list";
+	}
 }

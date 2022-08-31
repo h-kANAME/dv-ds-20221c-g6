@@ -41,7 +41,9 @@ import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
+import ar.edu.davinci.dvds20221cg6.controller.response.StockResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
@@ -67,7 +69,7 @@ public class OrikaConfiguration {
 		// Instanciando un mapper factory por default
 		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 		
-		
+				
 		// PRENDA
 		mapperFactory.classMap(Prenda.class, PrendaResponse.class)
 		.customize(new CustomMapper<Prenda, PrendaResponse>() {
@@ -79,7 +81,8 @@ public class OrikaConfiguration {
 				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
 				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
-			}
+				StockResponse stockResponse=StockResponse.builder().id(prenda.getStock().getId()).cantidad(prenda.getCantidad()).build();
+				prendaResponse.setStock(stockResponse);			}
 		}).register();
 		
 		mapperFactory.classMap(PrendaInsertRequest.class, Prenda.class)
@@ -92,8 +95,8 @@ public class OrikaConfiguration {
 				prenda.setPrecioBase(prendaInsertRequest.getPrecioBase());
 				prenda.setTipo(tipoPrenda);
 				prenda.setEstado(estadoPrenda);
-				
-				
+				Stock stock=Stock.builder().cantidad(prendaInsertRequest.getStock().getCantidad()).build();
+				prenda.setStock(stock);	
 			}
 		}).register();
 		
@@ -107,6 +110,8 @@ public class OrikaConfiguration {
 				prenda.setPrecioBase(prendaUpdateRequest.getPrecioBase());
 				prenda.setTipo(tipoPrenda);
 				prenda.setEstado(estadoPrenda);
+				Stock stock=Stock.builder().cantidad(prendaUpdateRequest.getStock().getCantidad()).build();
+				prenda.setStock(stock);
 			}
 		}).register();
 		
@@ -132,6 +137,7 @@ public class OrikaConfiguration {
 							.build();
 					
 					for (Item item : venta.getItems()) {
+						StockResponse stockResponse=StockResponse.builder().id(item.getPrenda().getStock().getId()).cantidad(item.getPrenda().getCantidad()).build();
 						PrendaResponse prendaResponse = PrendaResponse.builder()
 								.id(item.getPrenda().getId())
 								.descripcion(item.getPrenda().getDescripcion())
@@ -139,6 +145,7 @@ public class OrikaConfiguration {
 								.estado(item.getPrenda().getEstado().getDescripcion())
 								.precioBase(item.getPrenda().getPrecioBase())
 								.precioFinal(item.getPrenda().getPrecioFinal())
+								.stock(stockResponse)
 								.build();
 						ItemResponse itemResponse = ItemResponse.builder()
 						.id(item.getId())
@@ -217,7 +224,11 @@ public class OrikaConfiguration {
 				Prenda prenda = Prenda.builder()
 						.id(itemInsertRequest.getPrendaId())
 						.build();
+				Stock stock = Stock.builder()
+						.id(prenda.getStock().getId())
+						.build();
 				item.setPrenda(prenda);
+				item.getPrenda().setStock(stock);
 				item.setCantidad(itemInsertRequest.getCantidad());
 			}
 		}).register();
@@ -227,6 +238,7 @@ public class OrikaConfiguration {
 			public void mapAtoB(final ItemUpdateRequest itemUpdateRequest, final Item item, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for itemUpdateRequest --> Item #### ");
 				item.setCantidad(itemUpdateRequest.getCantidad());
+				//item.getPrenda().setStock(item);
 			}
 		}).register();
 
@@ -234,16 +246,23 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<Item, ItemResponse>() {
 			public void mapAtoB(final Item item, final ItemResponse itemResponse, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for Item --> ItemResponse #### ");
+				StockResponse stockResponse= StockResponse.builder()
+						.id(item.getPrenda().getStock().getId())
+						.cantidad(item.getPrenda().getStock().getCantidad())
+						.build();
 				PrendaResponse prendaResponse = PrendaResponse.builder()
 						.id(item.getPrenda().getId())
 						.descripcion(item.getPrenda().getDescripcion())
+						.estado(item.getPrenda().getEstado().getDescripcion())
 						.tipo(item.getPrenda().getTipo().getDescripcion())
 						.precioBase(item.getPrenda().getPrecioBase())
+						.stock(stockResponse)
 						.build();
 				itemResponse.setId(item.getId());
 				itemResponse.setCantidad(item.getCantidad());
 				itemResponse.setPrenda(prendaResponse);
 				itemResponse.setImporte(item.importe());
+				
 			}
 		}).register();		
 		
@@ -291,13 +310,21 @@ public class OrikaConfiguration {
 				
 				ventaResponse.setItems(new ArrayList<ItemResponse>());
 				for (Item item : venta.getItems()) {
+					StockResponse stockResponse = StockResponse.builder()
+							.id(item.getPrenda().getStock().getId())
+							.cantidad(item.getPrenda().getStock().getCantidad())
+							.build();
+							
 					PrendaResponse prendaResponse = PrendaResponse.builder()
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
 							.estado(item.getPrenda().getEstado().getDescripcion())
 							.tipo(item.getPrenda().getTipo().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
 							.precioFinal(item.getPrenda().getPrecioFinal())
+							.stock(stockResponse)
+
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())
@@ -356,6 +383,10 @@ public class OrikaConfiguration {
 				
 				ventaResponse.setItems(new ArrayList<ItemResponse>());
 				for (Item item : venta.getItems()) {
+					StockResponse stockResponse = StockResponse.builder()
+							.id(item.getPrenda().getStock().getId())
+							.cantidad(item.getPrenda().getStock().getCantidad())
+							.build();
 					PrendaResponse prendaResponse = PrendaResponse.builder()
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
@@ -363,6 +394,7 @@ public class OrikaConfiguration {
 							.estado(item.getPrenda().getEstado().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
 							.precioFinal(item.getPrenda().getPrecioFinal())
+							.stock(stockResponse)							
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())

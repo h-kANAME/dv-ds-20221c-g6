@@ -49,7 +49,7 @@ public class PrendaServiceImplements implements PrendaService {
 		LOGGER.debug("Grabamos la prenda: " + prenda.toString());
 		if (prenda.getId() == null) {
 			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda);
+			strategy.obtenerPrecioVenta(prenda); //VER CON GABO
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede crear la prenda con un id específico.");
@@ -60,7 +60,7 @@ public class PrendaServiceImplements implements PrendaService {
 		LOGGER.debug("Modificamos la prenda: " + prenda.toString());
 		if (prenda.getId() != null) {
 			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda);
+			strategy.obtenerPrecioVenta(prenda); //VER CON GABO
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede modificar una prenda que aún no fue creada.");
@@ -75,7 +75,6 @@ public class PrendaServiceImplements implements PrendaService {
 	@Override
 	public void delete(Long id) {
 		LOGGER.debug("Borrando la prenda con el id: " + id);
-
 		repository.deleteById(id);
 	}
 
@@ -92,7 +91,6 @@ public class PrendaServiceImplements implements PrendaService {
 	@Override
 	public List<Prenda> list() {
 		LOGGER.debug("Listado de todas las prendas");
-
 		return repository.findAll();
 	}
 
@@ -100,7 +98,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Page<Prenda> list(Pageable pageable) {
 		LOGGER.debug("Listado de todas las prendas por páginas");
 		LOGGER.debug("Pageable: offset: " + pageable.getOffset() + ", pageSize: " + pageable.getPageSize() + " and pageNumber: " + pageable.getPageNumber());
-
 		return repository.findAll(pageable);
 	}
 
@@ -112,14 +109,12 @@ public class PrendaServiceImplements implements PrendaService {
 
 	@Override
 	public List<TipoPrenda> getTipoPrendas() {
-		// TODO Auto-generated method stub
 		return TipoPrenda.getTipoPrendas();
 	}
 
 
 	@Override
 	public List<EstadoPrenda> getEstadoPrendas() {
-		// TODO Auto-generated method stub
 		return EstadoPrenda.getEstadoPrendas();
 	}
 
