@@ -294,8 +294,10 @@ public class OrikaConfiguration {
 					PrendaResponse prendaResponse = PrendaResponse.builder()
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.tipo(item.getPrenda().getTipo().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
+							.precioFinal(item.getPrenda().getPrecioFinal())
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())
@@ -358,7 +360,9 @@ public class OrikaConfiguration {
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
 							.tipo(item.getPrenda().getTipo().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
+							.precioFinal(item.getPrenda().getPrecioFinal())
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())
