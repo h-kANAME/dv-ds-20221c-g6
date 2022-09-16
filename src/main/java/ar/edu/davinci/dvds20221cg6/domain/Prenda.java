@@ -5,17 +5,22 @@ import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,7 +70,8 @@ public class Prenda  implements Serializable {
 	@Column(name = "prd_precio_final")
 	private BigDecimal precioFinal;	
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@JsonIgnore
+	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 	@JoinColumn(name = "prd_stock_id", referencedColumnName="stk_id", nullable = false)
 	private Stock stock;
 	
@@ -76,7 +82,7 @@ public class Prenda  implements Serializable {
 	public Integer getCantidad() {
 		return stock.getCantidad();
 	}
-	
+
 	public void agregarStock(Integer cantidad) {
 		stock.agregarStock(cantidad);
 	}
@@ -84,5 +90,6 @@ public class Prenda  implements Serializable {
 	public void descontarStock(Integer cantidad) {
 		stock.descontarStock(cantidad);
 	}
+
 	
 }

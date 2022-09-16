@@ -1,13 +1,11 @@
 package ar.edu.davinci.dvds20221cg6.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
-import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;

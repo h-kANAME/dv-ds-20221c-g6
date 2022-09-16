@@ -27,6 +27,6 @@ public class PrendaResponse {
 	
 	private BigDecimal precioFinal;
 	
-	private StockResponse stock;
+	private Integer cantidad;
 
 }

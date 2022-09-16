@@ -1,4 +1,4 @@
-package ar.edu.davinci.dvds20221cg6.controller.response;
+package ar.edu.davinci.dvds20221cg6.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StockResponse {
-	private Long id;
+public class NegocioDateRequest {
 	
-	private Integer cantidad;
+	private String fecha;
 }

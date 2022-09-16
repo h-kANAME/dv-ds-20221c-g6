@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Editar Cliente</title>
+</head>
+<body>
+	<div align="center">
+		<h1>Editar Cliente</h1>
+		<br />
+		<table>
+			<tbody>
+				<tr>
+					<th><a href="/tienda">Volver al menú pricipal</a></th>
+					<th>&nbsp;</th>
+					<th><a href="/tienda/clientes/list">Volver</a></th>
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<form action="#" th:action="@{/tienda/clientes/save}"
+			th:object="${cliente}" method="post">
+
+			<table border="0" cellpadding="10">
+				<tr>
+					<td>Cliente ID:</td>
+					<td><input type="text" th:field="*{id}" readonly="readonly" />
+					</td>
+				</tr>
+				<tr>
+					<td>Nombre:</td>
+					<td><input type="text" th:field="*{nombre}" /></td>
+				</tr>
+				<tr>
+					<td>Apellido:</td>
+					<td><input type="text" th:field="*{apellido}" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button type="submit">Grabar</button></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</body>
+</html>

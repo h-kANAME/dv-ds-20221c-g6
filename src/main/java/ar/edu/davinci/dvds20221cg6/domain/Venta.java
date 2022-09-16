@@ -27,6 +27,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
@@ -71,9 +72,10 @@ public abstract class Venta implements Serializable {
 	@OneToMany(mappedBy="venta", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Item> items;
- 	
-	@ManyToOne(targetEntity = Negocio.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="vta_ngo_id", referencedColumnName="ngo_id", nullable = false)
+	@JsonBackReference
 	private Negocio negocio;
 	
 	public abstract Double conRecargo(Double importeBase);

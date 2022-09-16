@@ -54,6 +54,8 @@
 					<td th:text="${prenda.stock.cantidad}">Stock</td>
 					<td><a th:href="@{'/tienda/prendas/edit/' + ${prenda.id}}">Editar</a>
 						&nbsp;&nbsp;&nbsp; <a
+						th:href="@{'/tienda/prendas/stock/' + ${prenda.id}}">Stock</a>
+						&nbsp;&nbsp;&nbsp; <a
 						th:href="@{'/tienda/prendas/delete/' + ${prenda.id}}">Borrar</a></td>
 				</tr>
 			</tbody>

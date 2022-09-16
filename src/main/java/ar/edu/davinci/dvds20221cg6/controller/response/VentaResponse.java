@@ -18,6 +18,8 @@ public abstract class VentaResponse {
 	
 	private String fecha;
 	
+	private Long idNegocio;
+	
 	private List<ItemResponse> items;
 	
 	private BigDecimal importeFinal;

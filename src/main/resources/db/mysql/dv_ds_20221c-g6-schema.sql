@@ -1,3 +1,12 @@
+
+--
+-- Drop Table structure for table ventas_tarjeta
+--
+
+DROP TABLE IF EXISTS ventas_tarjeta;
+
+--
+-- Drop Table structure for table ventas_efectivo
 --
 
 DROP TABLE IF EXISTS ventas_efectivo;
@@ -15,10 +24,18 @@ DROP TABLE IF EXISTS venta_items;
 DROP TABLE IF EXISTS ventas;
 
 --
+
+-- Drop Table structure for table stock
+--
+
+DROP TABLE IF EXISTS stock;
+
+
 -- Drop Table structure for table negocio
 --
 
 DROP TABLE IF EXISTS negocio;
+
 
 --
 -- Drop Table structure for table prendas
@@ -33,16 +50,27 @@ DROP TABLE IF EXISTS clientes;
 --
 -- Table structure for table clientes
 --
-CREATE TABLE negocio (
-	ngo_id bigint NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (ngo_id)
-);
 
 CREATE TABLE clientes (
   cli_id bigint NOT NULL AUTO_INCREMENT,
   cli_apellido varchar(255) DEFAULT NULL,
   cli_nombre varchar(255) DEFAULT NULL,
   PRIMARY KEY (cli_id)
+);
+
+CREATE TABLE negocio (
+  ngo_id bigint NOT NULL AUTO_INCREMENT,
+  ngo_name varchar(255) DEFAULT NULL,
+  PRIMARY KEY (ngo_id)
+);
+
+--
+-- Table structure for table stock
+--
+CREATE TABLE stock (
+  stock_id bigint NOT NULL AUTO_INCREMENT,
+  prd_cantidad int DEFAULT 0 NOT NULL,
+  PRIMARY KEY (stock_id)
 );
 
 --
@@ -56,8 +84,11 @@ CREATE TABLE prendas (
   prd_precio_final decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
   prd_estado_prenda varchar(255) DEFAULT NULL,
-  PRIMARY KEY (prd_id)
+  prd_stock_id bigint NOT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_stock_fk FOREIGN KEY (prd_stock_id) REFERENCES stock (stock_id)
 );
+
 
 --
 -- Table structure for table ventas
@@ -72,7 +103,7 @@ CREATE TABLE ventas (
   PRIMARY KEY (vta_id),
   CONSTRAINT vta_cli_fk FOREIGN KEY (vta_cli_id) REFERENCES clientes (cli_id),
   CONSTRAINT vta_ngo_fk FOREIGN KEY (vta_ngo_id) REFERENCES negocio (ngo_id)
-);
+ );
 
 --
 -- Table structure for table venta_items

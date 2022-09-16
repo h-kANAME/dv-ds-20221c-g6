@@ -2,8 +2,11 @@ package ar.edu.davinci.dvds20221cg6.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -44,6 +47,9 @@ public class Negocio implements Serializable{
 	@Column(name = "ngo_id")
 	private Long id;
 	
+	@Column(name = "ngo_name", nullable = false)
+	private String name;
+	
 	@OneToMany(mappedBy="negocio", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Venta> ventas;
@@ -53,4 +59,32 @@ public class Negocio implements Serializable{
 		ventas.stream().forEach(v -> {if(v.esDeFecha(dia)) { gananciaXDia.add(v.importeFinal());}});
 		return gananciaXDia;
 	}
+
+	public List<Venta> getVentasDelDia(Date dia){
+		return ventas.stream()
+				.filter(v -> v.esDeFecha(dia))
+				.collect(Collectors.toList());
+	}
+	
+	public BigDecimal calcularGananciaTotal() {
+		BigDecimal  gananciaTotal = ventas.stream()
+											.map(v -> v.importeFinal())
+											.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return gananciaTotal;
+	}
+	
+	public String getGananciaTotalStr() {
+		return calcularGananciaTotal().toString();
+	}
+	
+	public void addVenta(Venta venta) {
+		if (this.ventas == null) {
+			this.ventas = new ArrayList<Venta>();
+		}
+		
+		this.ventas.add(venta);
+		
+	
+	}
+
 }

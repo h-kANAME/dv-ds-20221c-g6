@@ -13,6 +13,8 @@ public class VentaTarjetaRequest {
 	
 	private Long clienteId;
 	
+	private Long negocioId;
+	
 	private Integer cantidadCuotas;
 
 }

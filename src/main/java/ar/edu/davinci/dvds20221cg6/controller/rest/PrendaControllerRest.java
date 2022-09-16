@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.PrendaService;
 import ma.glasnost.orika.MapperFacade;
 
-
+@CrossOrigin("*")
 @RestController
 public class PrendaControllerRest extends TiendaAppRest {
 
@@ -198,7 +199,8 @@ public class PrendaControllerRest extends TiendaAppRest {
 			prendaModificar.setTipo(prendaNuevo.getTipo());
 			prendaModificar.setEstado(prendaNuevo.getEstado());
 			prendaModificar.setPrecioBase(prendaNuevo.getPrecioBase());
-			
+			prendaModificar.setPrecioFinal(prendaNuevo.getPrecioFinal());
+
 			// Grabar el Prenda Nuevo en Prenda a Modificar
 			try {
 				prendaModificar = service.update(prendaModificar);
