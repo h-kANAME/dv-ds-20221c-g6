@@ -43,7 +43,6 @@ import ar.edu.davinci.dvds20221cg6.domain.VentaTarjeta;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.ItemService;
 import ar.edu.davinci.dvds20221cg6.service.PrendaService;
-import ar.edu.davinci.dvds20221cg6.service.StockService;
 import ar.edu.davinci.dvds20221cg6.service.VentaService;
 import ma.glasnost.orika.MapperFacade;
 
@@ -51,9 +50,6 @@ import ma.glasnost.orika.MapperFacade;
 @Controller
 public class VentaController extends TiendaApp {
 	private final Logger LOGGER = LoggerFactory.getLogger(VentaController.class);
-
-	@Autowired
-	private StockService stockService;
 	
 	@Autowired
 	private PrendaService prendaService;
@@ -228,11 +224,11 @@ public class VentaController extends TiendaApp {
     			
 	    		//venta = ventaService.addItem(datosVentaItem.getVentaId(), item);
 	        	//Long idPrenda = item.getPrenda().getId();
-		        Prenda prenda = prendaService.findById(item.getPrenda().getId());
+		        /*Prenda prenda = prendaService.findById(item.getPrenda().getId());
 		        Long idStock = stockService.findById(prenda.getId()).getId();
 		        Stock stock =stockService.findById(idStock);
 		        prenda.getStock().descontarStock(datosVentaItem.getCantidad());
-				stockService.update(stock);
+				stockService.update(stock);*/
 		        
         	}
         	LOGGER.info("Venta Grabada: " + venta.toString());
