@@ -3,8 +3,10 @@ package ar.edu.davinci.dvds20221cg6.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,9 +40,6 @@ public class Stock implements Serializable{/**
 	
 	@Column(name = "stk_cantidad")
 	private Integer cantidad;
-	
-	@OneToOne(mappedBy = "stock")
-	private Prenda prenda;
 	
 	public Integer getCantidad() {
 		return cantidad;

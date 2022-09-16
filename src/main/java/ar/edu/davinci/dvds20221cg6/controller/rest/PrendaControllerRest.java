@@ -316,7 +316,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 		
 		if(Objects.nonNull(newStock)) {
 			if(newStock.getCantidad() <= prendaModificar.getCantidad()) {
-				prendaModificar.agregarStock(newStock.getCantidad());
+				prendaModificar.descontarStock(newStock.getCantidad());
 				
 				try {
 					prendaModificar = service.update(prendaModificar);

@@ -38,11 +38,13 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ClienteUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ClienteResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Cliente;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
 import ar.edu.davinci.dvds20221cg6.domain.Stock;
+import ar.edu.davinci.dvds20221cg6.domain.StrategyFactory;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
@@ -59,8 +61,11 @@ public class OrikaConfiguration {
 	
 	private final ObjectMapper objectMapper;
 	
+	private final StrategyFactory factory;
+	
 	public OrikaConfiguration() {
 		objectMapper = new ObjectMapper();
+		factory = new StrategyFactory();
 	}
 	
 	@Bean
@@ -87,14 +92,23 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<PrendaInsertRequest, Prenda>() {
 			public void mapAtoB(final PrendaInsertRequest prendaInsertRequest, final Prenda prenda, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for prendaInsertRequest --> Prenda #### ");
-				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
-				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
+				
 				prenda.setDescripcion(prendaInsertRequest.getDescripcion());
 				prenda.setPrecioBase(prendaInsertRequest.getPrecioBase());
+				
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
 				prenda.setTipo(tipoPrenda);
+				
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
 				prenda.setEstado(estadoPrenda);
+				
+				EstadoPrendaStrategy strategy = factory.getStrategy(estadoPrenda);
+				prenda.setStateStrategy(strategy);
+				
 				Stock stock=Stock.builder().cantidad(prendaInsertRequest.getCantidad()).build();
-				prenda.setStock(stock);	
+				prenda.setStock(stock);
+				
+				prenda.setPrecioFinal(strategy.obtenerPrecioVenta(prenda.getPrecioBase()));
 			}
 		}).register();
 		
@@ -102,12 +116,20 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<PrendaUpdateRequest, Prenda>() {
 			public void mapAtoB(final PrendaUpdateRequest prendaUpdateRequest, final Prenda prenda, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for prendaUpdateRequest --> Prenda #### ");
-				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
-				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
+					
 				prenda.setDescripcion(prendaUpdateRequest.getDescripcion());
 				prenda.setPrecioBase(prendaUpdateRequest.getPrecioBase());
+				
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
 				prenda.setTipo(tipoPrenda);
+				
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
 				prenda.setEstado(estadoPrenda);
+				
+				EstadoPrendaStrategy strategy = factory.getStrategy(estadoPrenda);
+				prenda.setStateStrategy(strategy);
+				
+				prenda.setPrecioFinal(strategy.obtenerPrecioVenta(prenda.getPrecioBase()));
 				
 			}
 		}).register();

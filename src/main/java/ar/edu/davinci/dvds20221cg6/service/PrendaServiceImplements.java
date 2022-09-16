@@ -36,13 +36,10 @@ public class PrendaServiceImplements implements PrendaService {
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaServiceImplements.class);
 	
 	private PrendaRepository repository;
-	private StrategyFactory strategyFactory;
 
 	@Autowired
-	public PrendaServiceImplements(final PrendaRepository repository, 
-									final StrategyFactory strategy) {
+	public PrendaServiceImplements(final PrendaRepository repository) {
 		this.repository = repository;
-		this.strategyFactory = strategy;
 	}
 
 
@@ -50,9 +47,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda save(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Grabamos la prenda: " + prenda.toString());
 		if (prenda.getId() == null) {
-			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda);
-			strategy.obtenerPrecioVenta(prenda); 
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede crear la prenda con un id específico.");
@@ -62,8 +56,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda update(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Modificamos la prenda: " + prenda.toString());
 		if (prenda.getId() != null) {
-			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda); //VER CON GABO
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede modificar una prenda que aún no fue creada.");

@@ -14,14 +14,12 @@ public class PrendaPromocion implements Serializable, EstadoPrendaStrategy{
 	private Double descuento = 20.0;
 	
 	@Override
-	public void obtenerPrecioVenta(Prenda prenda) {
+	public BigDecimal obtenerPrecioVenta(BigDecimal precioBase) {
 		// TODO Auto-generated method stub
-		prenda.setEstado(EstadoPrenda.PROMOCION);
-		BigDecimal resta = prenda.getPrecioBase()
-								.multiply(new BigDecimal(descuento))
-								.divide(new BigDecimal(100));
-		BigDecimal precioFinal = prenda.getPrecioBase().subtract(resta);
-		prenda.setPrecioFinal(precioFinal);
+		BigDecimal montoRestar = precioBase.multiply(new BigDecimal(descuento))
+				.divide(new BigDecimal(100));
+
+		return precioBase.subtract(montoRestar);
 	}
 
 }

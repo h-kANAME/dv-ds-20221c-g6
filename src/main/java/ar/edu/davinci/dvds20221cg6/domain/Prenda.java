@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -71,9 +72,13 @@ public class Prenda  implements Serializable {
 	private BigDecimal precioFinal;	
 	
 	@JsonIgnore
-	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval  = true)
 	@JoinColumn(name = "prd_stock_id", referencedColumnName="stk_id", nullable = false)
 	private Stock stock;
+	
+	@JsonIgnore
+	@Transient
+	private EstadoPrendaStrategy stateStrategy;
 	
 	public BigDecimal getPrecioBase() {
 		return precioBase;
