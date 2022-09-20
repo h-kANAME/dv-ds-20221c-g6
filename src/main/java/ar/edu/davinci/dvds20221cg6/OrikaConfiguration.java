@@ -143,70 +143,75 @@ public class OrikaConfiguration {
 							
 				negocioResponse.setId(negocio.getId());
 				negocioResponse.setName(negocio.getName());
-				negocioResponse.setGananciaTotal(negocio.calcularGananciaTotal());
+				
 				negocioResponse.setVentas(new ArrayList<VentaResponse>());
 				
-				for(Venta venta: negocio.getVentas()) {
-					List<ItemResponse> items = new ArrayList<ItemResponse>();
-					
-					ClienteResponse cliente = ClienteResponse.builder()
-							.id(venta.getCliente().getId())
-							.nombre(venta.getCliente().getNombre())
-							.apellido(venta.getCliente().getApellido())
-							.build();
-					
-					for (Item item : venta.getItems()) {
-						PrendaResponse prendaResponse = PrendaResponse.builder()
-								.id(item.getPrenda().getId())
-								.descripcion(item.getPrenda().getDescripcion())
-								.tipo(item.getPrenda().getTipo().getDescripcion())
-								.estado(item.getPrenda().getEstado().getDescripcion())
-								.precioBase(item.getPrenda().getPrecioBase())
-								.precioFinal(item.getPrenda().getPrecioFinal())
-								.cantidad(item.getPrenda().getCantidad())
+				if(negocio.getVentas() != null) {
+					negocioResponse.setGananciaTotal(negocio.calcularGananciaTotal());
+					for(Venta venta: negocio.getVentas()) {
+						
+						List<ItemResponse> items = new ArrayList<ItemResponse>();
+						
+						ClienteResponse cliente = ClienteResponse.builder()
+								.id(venta.getCliente().getId())
+								.nombre(venta.getCliente().getNombre())
+								.apellido(venta.getCliente().getApellido())
 								.build();
-						ItemResponse itemResponse = ItemResponse.builder()
-						.id(item.getId())
-						.cantidad(item.getCantidad())
-						.prenda(prendaResponse)
-						.importe(item.importe())
-						.build();
+						
+						for (Item item : venta.getItems()) {
+							PrendaResponse prendaResponse = PrendaResponse.builder()
+									.id(item.getPrenda().getId())
+									.descripcion(item.getPrenda().getDescripcion())
+									.tipo(item.getPrenda().getTipo().getDescripcion())
+									.estado(item.getPrenda().getEstado().getDescripcion())
+									.precioBase(item.getPrenda().getPrecioBase())
+									.precioFinal(item.getPrenda().getPrecioFinal())
+									.cantidad(item.getPrenda().getCantidad())
+									.build();
+							ItemResponse itemResponse = ItemResponse.builder()
+							.id(item.getId())
+							.cantidad(item.getCantidad())
+							.prenda(prendaResponse)
+							.importe(item.importe())
+							.build();
+							
+							
+							items.add(itemResponse);
+						}
 						
 						
-						items.add(itemResponse);
+						
+						if(venta instanceof VentaTarjeta) {
+							
+							VentaTarjetaResponse tarjetaResponse = new VentaTarjetaResponse();
+							VentaTarjeta ventaTarjeta = (VentaTarjeta) venta;
+							tarjetaResponse.setId(ventaTarjeta.getId());
+							tarjetaResponse.setFecha(ventaTarjeta.getFecha().toString());
+							tarjetaResponse.setImporteFinal(ventaTarjeta.importeFinal());
+							tarjetaResponse.setCantidadCuotas(ventaTarjeta.getCantidadCuotas());
+							tarjetaResponse.setCoeficienteTarjeta(ventaTarjeta.getCoeficienteTarjeta());
+							tarjetaResponse.setIdNegocio(ventaTarjeta.getNegocio().getId());
+							tarjetaResponse.setCliente(cliente);
+							tarjetaResponse.setItems(items);
+							negocioResponse.getVentas().add(tarjetaResponse);
+							
+						}else if(venta instanceof VentaEfectivo) {
+							
+							VentaEfectivoResponse efectivoResponse = new VentaEfectivoResponse();
+							VentaEfectivo ventaEfectivo = (VentaEfectivo) venta;
+							efectivoResponse.setId(ventaEfectivo.getId());
+							efectivoResponse.setFecha(ventaEfectivo.getFecha().toString());
+							efectivoResponse.setImporteFinal(ventaEfectivo.importeFinal());
+							efectivoResponse.setIdNegocio(ventaEfectivo.getNegocio().getId());
+							efectivoResponse.setCliente(cliente);
+							efectivoResponse.setItems(items);
+							negocioResponse.getVentas().add(efectivoResponse);
+							
+						}
+				
 					}
-					
-					
-					
-					if(venta instanceof VentaTarjeta) {
-						
-						VentaTarjetaResponse tarjetaResponse = new VentaTarjetaResponse();
-						VentaTarjeta ventaTarjeta = (VentaTarjeta) venta;
-						tarjetaResponse.setId(ventaTarjeta.getId());
-						tarjetaResponse.setFecha(ventaTarjeta.getFecha().toString());
-						tarjetaResponse.setImporteFinal(ventaTarjeta.importeFinal());
-						tarjetaResponse.setCantidadCuotas(ventaTarjeta.getCantidadCuotas());
-						tarjetaResponse.setCoeficienteTarjeta(ventaTarjeta.getCoeficienteTarjeta());
-						tarjetaResponse.setIdNegocio(ventaTarjeta.getNegocio().getId());
-						tarjetaResponse.setCliente(cliente);
-						tarjetaResponse.setItems(items);
-						negocioResponse.getVentas().add(tarjetaResponse);
-						
-					}else if(venta instanceof VentaEfectivo) {
-						
-						VentaEfectivoResponse efectivoResponse = new VentaEfectivoResponse();
-						VentaEfectivo ventaEfectivo = (VentaEfectivo) venta;
-						efectivoResponse.setId(ventaEfectivo.getId());
-						efectivoResponse.setFecha(ventaEfectivo.getFecha().toString());
-						efectivoResponse.setImporteFinal(ventaEfectivo.importeFinal());
-						efectivoResponse.setIdNegocio(ventaEfectivo.getNegocio().getId());
-						efectivoResponse.setCliente(cliente);
-						efectivoResponse.setItems(items);
-						negocioResponse.getVentas().add(efectivoResponse);
-						
-					}
-			
 				}
+				
 				
 			}
 		}).register();
@@ -242,11 +247,7 @@ public class OrikaConfiguration {
 				Prenda prenda = Prenda.builder()
 						.id(itemInsertRequest.getPrendaId())
 						.build();
-				Stock stock = Stock.builder()
-						.id(prenda.getStock().getId())
-						.build();
 				item.setPrenda(prenda);
-				item.getPrenda().setStock(stock);
 				item.setCantidad(itemInsertRequest.getCantidad());
 			}
 		}).register();

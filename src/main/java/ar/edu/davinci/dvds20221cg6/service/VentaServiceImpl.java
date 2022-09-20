@@ -205,6 +205,8 @@ public class VentaServiceImpl implements VentaService {
 				.venta(venta)
 				.build();
 		if (newItem.getCantidad()<= newItem.getPrenda().getCantidad()) {
+			newItem.getPrenda().descontarStock(newItem.getCantidad());
+			prendaService.update(newItem.getPrenda());
 			newItem = itemService.save(newItem);
 			venta.addItem(newItem);
 			return venta;
@@ -217,15 +219,25 @@ public class VentaServiceImpl implements VentaService {
 	public Venta updateItem(Long ventaId, Long itemId, Item item) throws BusinessException {
 		Venta venta = getVenta(ventaId);
 		Item actualItem = getItem(itemId);
-		actualItem.setCantidad(item.getCantidad());
-		actualItem = itemService.update(actualItem);
-		return venta;
+		
+		if(item.getCantidad() <= actualItem.getPrenda().getCantidad()) {
+			actualItem.getPrenda().agregarStock(actualItem.getCantidad());
+			actualItem.setCantidad(item.getCantidad());
+			actualItem.getPrenda().descontarStock(item.getCantidad());
+			prendaService.update(actualItem.getPrenda());
+			actualItem = itemService.update(actualItem);
+			return venta;
+		}
+		throw new BusinessException("La cantidad ingresada es mayor a la del stock actual: " + ventaId);
+		
 	}
 
 	@Override
 	public Venta deleteItem(Long ventaId, Long itemId) throws BusinessException {
 		Venta venta = getVenta(ventaId);
 		Item actualItem = getItem(itemId);
+		actualItem.getPrenda().agregarStock(actualItem.getCantidad());
+		prendaService.update(actualItem.getPrenda());
 		itemService.delete(itemId);
 		venta.getItems().remove(actualItem);
 		ventaRepository.save(venta);

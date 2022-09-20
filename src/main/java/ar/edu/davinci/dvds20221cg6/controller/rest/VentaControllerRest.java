@@ -299,7 +299,7 @@ public class VentaControllerRest extends TiendaAppRest{
 	 * @return 
 	 */
 	@DeleteMapping("/ventas/{ventaId}/items/{itemId}")
-	public ResponseEntity<VentaResponse> deleteCliente(@PathVariable("ventaId") long ventaId,
+	public ResponseEntity<VentaResponse> deleteItem(@PathVariable("ventaId") long ventaId,
 			@PathVariable("itemId") long itemId) {
 		VentaResponse ventaResponse = null;
 		Venta venta = null;
