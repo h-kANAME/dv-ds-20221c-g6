@@ -18,19 +18,29 @@ DROP TABLE IF EXISTS ventas_efectivo;
 DROP TABLE IF EXISTS venta_items;
 
 --
--- Drop Table structure for table negocio
---
-
-DROP TABLE IF EXISTS negocio;
-
---
 -- Drop Table structure for table ventas
 --
 
 DROP TABLE IF EXISTS ventas;
 
+--
+<<<<<<< HEAD
+=======
+
+-- Drop Table structure for table stock
+--
+
+DROP TABLE IF EXISTS stock;
+
+
+-- Drop Table structure for table negocio
+--
+
+DROP TABLE IF EXISTS negocio;
+
 
 --
+>>>>>>> test-stock-nico
 -- Drop Table structure for table prendas
 --
 
@@ -44,6 +54,12 @@ DROP TABLE IF EXISTS clientes;
 -- Table structure for table clientes
 --
 
+CREATE TABLE stocks (
+	stk_id bigint NOT NULL AUTO_INCREMENT,
+	stk_cantidad tinyint DEFAULT 0,
+    PRIMARY KEY (stk_id)
+);
+
 CREATE TABLE clientes (
   cli_id bigint NOT NULL AUTO_INCREMENT,
   cli_apellido varchar(255) DEFAULT NULL,
@@ -53,7 +69,17 @@ CREATE TABLE clientes (
 
 CREATE TABLE negocio (
   ngo_id bigint NOT NULL AUTO_INCREMENT,
+  ngo_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (ngo_id)
+);
+
+--
+-- Table structure for table stock
+--
+CREATE TABLE stock (
+  stock_id bigint NOT NULL AUTO_INCREMENT,
+  prd_cantidad int DEFAULT 0 NOT NULL,
+  PRIMARY KEY (stock_id)
 );
 
 --
@@ -67,7 +93,15 @@ CREATE TABLE prendas (
   prd_precio_final decimal(19,2) DEFAULT NULL,
   prd_tipo_prenda varchar(255) DEFAULT NULL,
   prd_estado_prenda varchar(255) DEFAULT NULL,
-  PRIMARY KEY (prd_id)
+<<<<<<< HEAD
+  prd_stock_id bigint DEFAULT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_stk_fk FOREIGN KEY (prd_stock_id) REFERENCES stocks (stk_id)
+=======
+  prd_stock_id bigint NOT NULL,
+  PRIMARY KEY (prd_id),
+  CONSTRAINT prd_stock_fk FOREIGN KEY (prd_stock_id) REFERENCES stock (stock_id)
+>>>>>>> test-stock-nico
 );
 
 

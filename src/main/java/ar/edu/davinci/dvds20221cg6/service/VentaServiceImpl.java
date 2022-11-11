@@ -39,8 +39,6 @@ public class VentaServiceImpl implements VentaService {
 	
 	private final VentaTarjetaRepository ventaTarjetaRepository;
 	
-	private final NegocioRepository negocioRepository;
-	
 	private final ClienteService clienteService;
 
 	private final PrendaService prendaService;
@@ -57,8 +55,7 @@ public class VentaServiceImpl implements VentaService {
 			final ClienteService clienteService,
 			final PrendaService prendaService,
 			final ItemService itemService,
-			final NegocioService negocioService,
-			final NegocioRepository negocioRepository) {
+			final NegocioService negocioService) {
 		this.ventaRepository = ventaRepository;
 		this.ventaEfectivoRepository = ventaEfectivoRepository;
 		this.ventaTarjetaRepository = ventaTarjetaRepository;
@@ -66,7 +63,6 @@ public class VentaServiceImpl implements VentaService {
 		this.prendaService = prendaService;
 		this.itemService = itemService;
 		this.negocioService = negocioService;
-		this.negocioRepository = negocioRepository;
 
 	}
 
@@ -101,8 +97,8 @@ public class VentaServiceImpl implements VentaService {
 		
 		venta = ventaEfectivoRepository.save(venta);
 		
-		negocio.addVenta(venta);
-		negocioRepository.save(negocio);
+		
+		negocioService.addVenta(negocio.getId(), venta);
 		
 		return venta;
 
@@ -148,16 +144,15 @@ public class VentaServiceImpl implements VentaService {
 				.build();
 		
 		venta = ventaTarjetaRepository.save(venta);
-		negocio.addVenta(venta);
-		negocioRepository.save(negocio);
+
+		negocioService.addVenta(negocio.getId(), venta);
+		
 		return venta;
 	}
 
 	@Override
 	public VentaTarjeta save(VentaTarjeta ventaTarjeta, Item item) throws BusinessException {
-
 		ventaTarjeta.addItem(item);
-		
 		return ventaTarjetaRepository.save(ventaTarjeta);
 	}
 
@@ -179,23 +174,19 @@ public class VentaServiceImpl implements VentaService {
 		if (itemOptional.isPresent()) {
 			return itemOptional.get();
 		}
-		
 		throw new BusinessException("No se encotró la venta por el id: " + id);
 	}
 
 	@Override
 	public List<Venta> list() {
 		LOGGER.debug("Listado de todas las ventas");
-
 		return ventaRepository.findAll();
 	}
 
 	@Override
 	public Page<Venta> list(Pageable pageable) {
-		
 		LOGGER.debug("Listado de todas las ventas por páginas");
 		LOGGER.debug("Pageable: offset: " + pageable.getOffset() + ", pageSize: " + pageable.getPageSize() + " and pageNumber: " + pageable.getPageNumber());
-		
 		return ventaRepository.findAll(pageable);
 	}
 
@@ -206,48 +197,50 @@ public class VentaServiceImpl implements VentaService {
 
 	@Override
 	public Venta addItem(Long ventaId, Item item) throws BusinessException {
-		
 		Venta venta = getVenta(ventaId);
-		
 		Prenda prenda = getPrenda(item);
 		Item newItem = Item.builder()
 				.cantidad(item.getCantidad())
 				.prenda(prenda)
 				.venta(venta)
 				.build();
-		
-		newItem = itemService.save(newItem);
-		
-		venta.addItem(newItem);
-				
-		return venta;
+		if (newItem.getCantidad()<= newItem.getPrenda().getCantidad()) {
+			newItem.getPrenda().descontarStock(newItem.getCantidad());
+			prendaService.update(newItem.getPrenda());
+			newItem = itemService.save(newItem);
+			venta.addItem(newItem);
+			return venta;
+		}else {
+			throw new BusinessException("La cantidad ingresada es mayor a la del stock actual: " + ventaId);
+		}
 	}
 
 	@Override
 	public Venta updateItem(Long ventaId, Long itemId, Item item) throws BusinessException {
 		Venta venta = getVenta(ventaId);
-		
 		Item actualItem = getItem(itemId);
 		
-		actualItem.setCantidad(item.getCantidad());
+		if(item.getCantidad() <= actualItem.getPrenda().getCantidad()) {
+			actualItem.getPrenda().agregarStock(actualItem.getCantidad());
+			actualItem.setCantidad(item.getCantidad());
+			actualItem.getPrenda().descontarStock(item.getCantidad());
+			prendaService.update(actualItem.getPrenda());
+			actualItem = itemService.update(actualItem);
+			return venta;
+		}
+		throw new BusinessException("La cantidad ingresada es mayor a la del stock actual: " + ventaId);
 		
-		actualItem = itemService.update(actualItem);
-		
-		return venta;
 	}
 
 	@Override
 	public Venta deleteItem(Long ventaId, Long itemId) throws BusinessException {
 		Venta venta = getVenta(ventaId);
-		
 		Item actualItem = getItem(itemId);
-		
+		actualItem.getPrenda().agregarStock(actualItem.getCantidad());
+		prendaService.update(actualItem.getPrenda());
 		itemService.delete(itemId);
-		
 		venta.getItems().remove(actualItem);
-		
 		ventaRepository.save(venta);
-		
 		return venta;
 	}
 	

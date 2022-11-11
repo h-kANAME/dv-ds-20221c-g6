@@ -72,12 +72,12 @@ public abstract class Venta implements Serializable {
 	@OneToMany(mappedBy="venta", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
 	private List<Item> items;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="vta_ngo_id", referencedColumnName="ngo_id", nullable = false)
 	@JsonBackReference
 	private Negocio negocio;
- 	
+	
 	public abstract Double conRecargo(Double importeBase);
 	
 	public String getRazonSocial() {
@@ -112,6 +112,6 @@ public abstract class Venta implements Serializable {
 		}
 		this.items.add(item);
 	}
-	
+
 
 }

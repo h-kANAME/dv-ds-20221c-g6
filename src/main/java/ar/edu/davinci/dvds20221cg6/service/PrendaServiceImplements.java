@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.domain.StrategyFactory;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
@@ -35,12 +36,10 @@ public class PrendaServiceImplements implements PrendaService {
 	private final Logger LOGGER = LoggerFactory.getLogger(PrendaServiceImplements.class);
 	
 	private PrendaRepository repository;
-	private StrategyFactory strategyFactory;
 
 	@Autowired
-	public PrendaServiceImplements(final PrendaRepository repository, final StrategyFactory strategy) {
+	public PrendaServiceImplements(final PrendaRepository repository) {
 		this.repository = repository;
-		this.strategyFactory = strategy;
 	}
 
 
@@ -48,8 +47,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda save(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Grabamos la prenda: " + prenda.toString());
 		if (prenda.getId() == null) {
-			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda);
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede crear la prenda con un id específico.");
@@ -59,8 +56,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Prenda update(Prenda prenda) throws BusinessException {
 		LOGGER.debug("Modificamos la prenda: " + prenda.toString());
 		if (prenda.getId() != null) {
-			EstadoPrendaStrategy strategy = strategyFactory.getStrategy(prenda.getEstado());
-			strategy.obtenerPrecioVenta(prenda);
 			return repository.save(prenda);
 		}
 		throw new BusinessException("No se puede modificar una prenda que aún no fue creada.");
@@ -75,7 +70,6 @@ public class PrendaServiceImplements implements PrendaService {
 	@Override
 	public void delete(Long id) {
 		LOGGER.debug("Borrando la prenda con el id: " + id);
-
 		repository.deleteById(id);
 	}
 
@@ -92,7 +86,6 @@ public class PrendaServiceImplements implements PrendaService {
 	@Override
 	public List<Prenda> list() {
 		LOGGER.debug("Listado de todas las prendas");
-
 		return repository.findAll();
 	}
 
@@ -100,7 +93,6 @@ public class PrendaServiceImplements implements PrendaService {
 	public Page<Prenda> list(Pageable pageable) {
 		LOGGER.debug("Listado de todas las prendas por páginas");
 		LOGGER.debug("Pageable: offset: " + pageable.getOffset() + ", pageSize: " + pageable.getPageSize() + " and pageNumber: " + pageable.getPageNumber());
-
 		return repository.findAll(pageable);
 	}
 
@@ -112,14 +104,12 @@ public class PrendaServiceImplements implements PrendaService {
 
 	@Override
 	public List<TipoPrenda> getTipoPrendas() {
-		// TODO Auto-generated method stub
 		return TipoPrenda.getTipoPrendas();
 	}
 
 
 	@Override
 	public List<EstadoPrenda> getEstadoPrendas() {
-		// TODO Auto-generated method stub
 		return EstadoPrenda.getEstadoPrendas();
 	}
 

@@ -1,4 +1,4 @@
-package ar.edu.davinci.dvds20221cg6.controller.view.request;
+package ar.edu.davinci.dvds20221cg6.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,14 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VentaItemCreateRequest {
-
-	private Long ventaId;
-
+public class StockRemoveRequest {
 	private Integer cantidad;
-
-	private Long prendaId;
-	
-
 }
-

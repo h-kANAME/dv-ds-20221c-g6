@@ -2,9 +2,11 @@ package ar.edu.davinci.dvds20221cg6.domain;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,20 +30,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="negocio")
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Builder
-public class Negocio implements Serializable{/**
+public class Negocio implements Serializable{
+	
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7379621577015231497L;
+	private static final long serialVersionUID = -3929492102236150035L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
 	@Column(name = "ngo_id")
 	private Long id;
+	
+	@Column(name = "ngo_name", nullable = false)
+	private String name;
 	
 	@OneToMany(mappedBy="negocio", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JsonManagedReference
@@ -52,6 +59,12 @@ public class Negocio implements Serializable{/**
 		ventas.stream().forEach(v -> {if(v.esDeFecha(dia)) { gananciaXDia.add(v.importeFinal());}});
 		return gananciaXDia;
 	}
+
+	public List<Venta> getVentasDelDia(Date dia){
+		return ventas.stream()
+				.filter(v -> v.esDeFecha(dia))
+				.collect(Collectors.toList());
+	}
 	
 	public BigDecimal calcularGananciaTotal() {
 		BigDecimal  gananciaTotal = ventas.stream()
@@ -60,7 +73,7 @@ public class Negocio implements Serializable{/**
 		return gananciaTotal;
 	}
 	
-	public String calcularGananciaTotalStr() {
+	public String getGananciaTotalStr() {
 		return calcularGananciaTotal().toString();
 	}
 	
@@ -68,7 +81,10 @@ public class Negocio implements Serializable{/**
 		if (this.ventas == null) {
 			this.ventas = new ArrayList<Venta>();
 		}
+		
 		this.ventas.add(venta);
+		
+	
 	}
 
 }

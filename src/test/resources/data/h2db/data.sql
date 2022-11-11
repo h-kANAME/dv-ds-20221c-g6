@@ -1,15 +1,4 @@
 
-INSERT INTO PRENDAS
-(prd_id,
-prd_descripcion,
-prd_precio_base,
-prd_tipo_prenda,
-prd_estado_prenda)
-VALUES
-(1, 'Camisa Celeste', 10.24, 'CAMISA', 'PROMOCION'),
-(2, 'Camisa Blanca', 100.50, 'CAMISA', 'LIQUIDACION'),
-(3, 'Saco Vestir', 102.4, 'SACO', 'NUEVA'),
-(4, 'Pantalon Gabardina Beige', 1004, 'PANTALON', 'PROMOCION');
 
 
 INSERT INTO CLIENTES

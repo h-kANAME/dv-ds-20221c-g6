@@ -36,6 +36,7 @@ import ar.edu.davinci.dvds20221cg6.service.VentaService;
 import ma.glasnost.orika.MapperFacade;
 @CrossOrigin("*")
 @RestController
+
 public class VentaControllerRest extends TiendaAppRest{
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(VentaControllerRest.class);
@@ -299,7 +300,7 @@ public class VentaControllerRest extends TiendaAppRest{
 	 * @return 
 	 */
 	@DeleteMapping("/ventas/{ventaId}/items/{itemId}")
-	public ResponseEntity<VentaResponse> deleteCliente(@PathVariable("ventaId") long ventaId,
+	public ResponseEntity<VentaResponse> deleteItem(@PathVariable("ventaId") long ventaId,
 			@PathVariable("itemId") long itemId) {
 		VentaResponse ventaResponse = null;
 		Venta venta = null;

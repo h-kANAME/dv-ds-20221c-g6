@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -34,11 +35,14 @@ import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaEfectivoCreateRe
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaItemCreateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.view.request.VentaTarjetaCreateRequest;
 import ar.edu.davinci.dvds20221cg6.domain.Item;
+import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ar.edu.davinci.dvds20221cg6.domain.VentaEfectivo;
 import ar.edu.davinci.dvds20221cg6.domain.VentaTarjeta;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.ItemService;
+import ar.edu.davinci.dvds20221cg6.service.PrendaService;
 import ar.edu.davinci.dvds20221cg6.service.VentaService;
 import ma.glasnost.orika.MapperFacade;
 
@@ -46,8 +50,9 @@ import ma.glasnost.orika.MapperFacade;
 @Controller
 public class VentaController extends TiendaApp {
 	private final Logger LOGGER = LoggerFactory.getLogger(VentaController.class);
-
 	
+	@Autowired
+	private PrendaService prendaService;
 	@Autowired
 	private VentaService ventaService;
 	
@@ -157,6 +162,23 @@ public class VentaController extends TiendaApp {
 		return "redirect:/tienda/ventas/list";
 	}
 	
+	@GetMapping(path = "/ventas/{ventaId}/item/edit/{itm_Id}")
+	public ModelAndView showEditItemPage(Model model, @PathVariable(name = "ventaId") Long ventaId, @PathVariable(name = "itm_Id") Long itm_Id) {
+		LOGGER.info("GET - showEditItemPage - /venta/"+ventaId+"/item/"+itm_Id+"");
+		LOGGER.info("item: " + itm_Id);
+		
+		ModelAndView mav = new ModelAndView("ventas/edit_item_ventas");
+		try {
+			
+			Item item = itemService.findById(itm_Id);
+			mav.addObject("item", item);
+			
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	
 	@RequestMapping(value = "/ventas/edit/{id}", method = RequestMethod.GET)
 	public ModelAndView showEditVentaPage(@PathVariable(name = "id") Long ventaId) {
 		LOGGER.info("GET - showEditVentaPage - /ventas/edit/{id}");
@@ -176,23 +198,80 @@ public class VentaController extends TiendaApp {
 	}
 	
 	@PostMapping(value = "/ventas/item/save")
-	public String saveVentaItem(@ModelAttribute("item") VentaItemCreateRequest datosVentaItem) {
+	public String saveVentaItem(Model model,@ModelAttribute("item") VentaItemCreateRequest datosVentaItem) {
 		LOGGER.info("POST - saveVentaItem - ventas/item/save");
 		LOGGER.info("datosVentaItem: " + datosVentaItem.toString());
 
         Item item = mapper.map(datosVentaItem, Item.class);
 
         // Grabar el nuevo Venta
-        Venta venta = null;
+        
         try {
-            venta = ventaService.addItem(datosVentaItem.getVentaId(), item);
+        	Venta venta = ventaService.findById(datosVentaItem.getVentaId());
+        	
+        	if (!Objects.isNull(venta)) {
+        		boolean exist=false;
+        		for (int x=0;x<venta.getItems().size();x++) {
+    	        	if(venta.getItems().get(x).getPrenda().getId()==item.getPrenda().getId()) {
+    	        		venta.getItems().get(x).setCantidad(venta.getItems().get(x).getCantidad()+datosVentaItem.getCantidad());
+    	        		exist=true;
+    	        		break;
+    	        	}
+    	        }
+        		if(!exist){
+        			venta = ventaService.addItem(datosVentaItem.getVentaId(), item);
+        		}
+    			
+	    		//venta = ventaService.addItem(datosVentaItem.getVentaId(), item);
+	        	//Long idPrenda = item.getPrenda().getId();
+		        /*Prenda prenda = prendaService.findById(item.getPrenda().getId());
+		        Long idStock = stockService.findById(prenda.getId()).getId();
+		        Stock stock =stockService.findById(idStock);
+		        prenda.getStock().descontarStock(datosVentaItem.getCantidad());
+				stockService.update(stock);*/
+		        
+        	}
+        	LOGGER.info("Venta Grabada: " + venta.toString());
+	 		LOGGER.info("redirect:/ventas/edit/"+datosVentaItem.getVentaId().toString());
+	 		return "redirect:/tienda/ventas/show/"+datosVentaItem.getVentaId().toString();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-		LOGGER.info("Venta Grabada: " + venta.toString());
-		LOGGER.info("redirect:/ventas/edit/"+datosVentaItem.getVentaId().toString());
+        	e.printStackTrace();
+            model.addAttribute("item", datosVentaItem);
 
-		return "redirect:/tienda/ventas/show/"+datosVentaItem.getVentaId().toString();
+            LOGGER.info("item: " + item.toString());
+
+    		return "ventas/new_ventas_item";
+        }
+    }
+	
+	@PostMapping(value = "/ventas/item/update")
+	public String updateItem(@ModelAttribute("item") Item item) {
+		LOGGER.info("POST - updateItem - /ventas/item/update");
+		LOGGER.info("item: " + item.toString());
+		try {
+			Long idPrenda = item.getPrenda().getId();
+	        Prenda prenda = prendaService.findById(idPrenda);
+	        int origin=0;
+	        
+	        for (int x=0;x<item.getVenta().getItems().size();x++) {
+	        	if(item.getVenta().getItems().get(x).getId()==item.getId()) {
+	        		origin=item.getVenta().getItems().get(x).getCantidad();
+	        		break;
+	        	}
+	        }
+			if(item.getCantidad()>origin) {
+				prenda.getStock().descontarStock(item.getCantidad()-origin);
+			}else if(item.getCantidad()<prenda.getStock().getCantidad()) {
+				prenda.getStock().agregarStock(origin-item.getCantidad());
+			}
+		//	prendaService.update(prenda);
+			itemService.update(item);
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "redirect:/tienda/ventas/list";
 	}
 	
 	
@@ -248,8 +327,20 @@ public class VentaController extends TiendaApp {
 	public String deleteItem(@PathVariable(name= "id")Long itemId){
 		LOGGER.info("Get - deleteItem - /item/delete/{id}");
 		LOGGER.info("item: " + itemId);
-		itemService.delete(itemId);
+		
+		try {
+			Item item = itemService.findById(itemId);
+			Long idPrenda = item.getPrenda().getId();
+	        Prenda prenda = prendaService.findById(idPrenda);
+	        prenda.getStock().agregarStock(item.getCantidad());
+			prendaService.update(prenda);
+			itemService.delete(itemId);
+			
+		}catch (Exception e) {
+        	e.printStackTrace();
+		}
 		return "redirect:/tienda/ventas/list";
+		//return "redirect:/tienda/ventas/show/"+datosVentaItem.getVentaId().toString();
 	}
 	
 }

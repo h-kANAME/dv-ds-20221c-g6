@@ -9,7 +9,6 @@
 		<div align="center">
 		<h1>Ganancias del Negocio</h1>
 		<h2 th:text="${negocio.calcularGananciaTotalStr}">Total</h2>
-		<p th:text="${fecha}"></p>
 		<br />
 		
 		<table>
@@ -19,20 +18,7 @@
 					<th>&nbsp;</th>
 				</tr>
 				<br />
-				<form action="#" th:action="@{'/tienda/negocios/profit/'+${negocio.id}}"
-             method="post" modelAttribute="fecha">
-
-            <table border="0" cellpadding="10">
-                <tr>
-                    <td>Fecha:</td>
-                    <td><input type="text"/></td>
-                </tr>               
-                
-                <tr>
-                    <td colspan="2"><button type="submit">Grabar</button></td>
-                </tr>
-            </table>
-        </form>
+				
 				<table border="1" cellpadding="10">
 					<thead>
 						<tr>

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.ItemUpdateRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioDateRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioInsertRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.NegocioUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaEfectivoRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.VentaTarjetaRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ItemResponse;
@@ -34,10 +38,13 @@ import ar.edu.davinci.dvds20221cg6.controller.request.ClienteUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.ClienteResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Cliente;
 import ar.edu.davinci.dvds20221cg6.domain.EstadoPrenda;
+import ar.edu.davinci.dvds20221cg6.domain.EstadoPrendaStrategy;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
+import ar.edu.davinci.dvds20221cg6.domain.StrategyFactory;
 import ar.edu.davinci.dvds20221cg6.domain.TipoPrenda;
 import ar.edu.davinci.dvds20221cg6.domain.Venta;
 import ma.glasnost.orika.CustomMapper;
@@ -54,16 +61,18 @@ public class OrikaConfiguration {
 	
 	private final ObjectMapper objectMapper;
 	
+	private final StrategyFactory factory;
+	
 	public OrikaConfiguration() {
 		objectMapper = new ObjectMapper();
+		factory = new StrategyFactory();
 	}
 	
 	@Bean
 	public MapperFacade mapper() {
 		// Instanciando un mapper factory por default
 		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-		
-		
+	
 		// PRENDA
 		mapperFactory.classMap(Prenda.class, PrendaResponse.class)
 		.customize(new CustomMapper<Prenda, PrendaResponse>() {
@@ -75,6 +84,7 @@ public class OrikaConfiguration {
 				prendaResponse.setEstado(prenda.getEstado().getDescripcion());
 				prendaResponse.setPrecioBase(prenda.getPrecioBase());
 				prendaResponse.setPrecioFinal(prenda.getPrecioFinal());
+				prendaResponse.setCantidad(prenda.getCantidad());
 			}
 		}).register();
 		
@@ -82,14 +92,23 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<PrendaInsertRequest, Prenda>() {
 			public void mapAtoB(final PrendaInsertRequest prendaInsertRequest, final Prenda prenda, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for prendaInsertRequest --> Prenda #### ");
-				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
-				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
+				
 				prenda.setDescripcion(prendaInsertRequest.getDescripcion());
 				prenda.setPrecioBase(prendaInsertRequest.getPrecioBase());
+				
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaInsertRequest.getTipo().toUpperCase());
 				prenda.setTipo(tipoPrenda);
+				
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaInsertRequest.getEstado().toUpperCase());
 				prenda.setEstado(estadoPrenda);
 				
+				EstadoPrendaStrategy strategy = factory.getStrategy(estadoPrenda);
+				prenda.setStateStrategy(strategy);
 				
+				Stock stock=Stock.builder().cantidad(prendaInsertRequest.getCantidad()).build();
+				prenda.setStock(stock);
+				
+				prenda.setPrecioFinal(strategy.obtenerPrecioVenta(prenda.getPrecioBase()));
 			}
 		}).register();
 		
@@ -97,18 +116,121 @@ public class OrikaConfiguration {
 		.customize(new CustomMapper<PrendaUpdateRequest, Prenda>() {
 			public void mapAtoB(final PrendaUpdateRequest prendaUpdateRequest, final Prenda prenda, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for prendaUpdateRequest --> Prenda #### ");
-				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
-				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
+					
 				prenda.setDescripcion(prendaUpdateRequest.getDescripcion());
 				prenda.setPrecioBase(prendaUpdateRequest.getPrecioBase());
+				
+				TipoPrenda tipoPrenda = TipoPrenda.valueOf(prendaUpdateRequest.getTipo().toUpperCase());
 				prenda.setTipo(tipoPrenda);
+				
+				EstadoPrenda estadoPrenda = EstadoPrenda.valueOf(prendaUpdateRequest.getEstado().toUpperCase());
 				prenda.setEstado(estadoPrenda);
+				
+				EstadoPrendaStrategy strategy = factory.getStrategy(estadoPrenda);
+				prenda.setStateStrategy(strategy);
+				
+				prenda.setPrecioFinal(strategy.obtenerPrecioVenta(prenda.getPrecioBase()));
+				
 			}
 		}).register();
 		
 		//NEGOCIO
 		
-		mapperFactory.classMap(Negocio.class, NegocioResponse.class).byDefault().register();
+		mapperFactory.classMap(Negocio.class, NegocioResponse.class)
+		.customize(new CustomMapper<Negocio, NegocioResponse>(){
+			public void mapAtoB(final Negocio negocio, final NegocioResponse negocioResponse, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for Negocio --> NegocioResponse #### ");
+							
+				negocioResponse.setId(negocio.getId());
+				negocioResponse.setName(negocio.getName());
+				
+				negocioResponse.setVentas(new ArrayList<VentaResponse>());
+				
+				if(negocio.getVentas() != null) {
+					negocioResponse.setGananciaTotal(negocio.calcularGananciaTotal());
+					for(Venta venta: negocio.getVentas()) {
+						
+						List<ItemResponse> items = new ArrayList<ItemResponse>();
+						
+						ClienteResponse cliente = ClienteResponse.builder()
+								.id(venta.getCliente().getId())
+								.nombre(venta.getCliente().getNombre())
+								.apellido(venta.getCliente().getApellido())
+								.build();
+						
+						for (Item item : venta.getItems()) {
+							PrendaResponse prendaResponse = PrendaResponse.builder()
+									.id(item.getPrenda().getId())
+									.descripcion(item.getPrenda().getDescripcion())
+									.tipo(item.getPrenda().getTipo().getDescripcion())
+									.estado(item.getPrenda().getEstado().getDescripcion())
+									.precioBase(item.getPrenda().getPrecioBase())
+									.precioFinal(item.getPrenda().getPrecioFinal())
+									.cantidad(item.getPrenda().getCantidad())
+									.build();
+							ItemResponse itemResponse = ItemResponse.builder()
+							.id(item.getId())
+							.cantidad(item.getCantidad())
+							.prenda(prendaResponse)
+							.importe(item.importe())
+							.build();
+							
+							
+							items.add(itemResponse);
+						}
+						
+						
+						
+						if(venta instanceof VentaTarjeta) {
+							
+							VentaTarjetaResponse tarjetaResponse = new VentaTarjetaResponse();
+							VentaTarjeta ventaTarjeta = (VentaTarjeta) venta;
+							tarjetaResponse.setId(ventaTarjeta.getId());
+							tarjetaResponse.setFecha(ventaTarjeta.getFecha().toString());
+							tarjetaResponse.setImporteFinal(ventaTarjeta.importeFinal());
+							tarjetaResponse.setCantidadCuotas(ventaTarjeta.getCantidadCuotas());
+							tarjetaResponse.setCoeficienteTarjeta(ventaTarjeta.getCoeficienteTarjeta());
+							tarjetaResponse.setIdNegocio(ventaTarjeta.getNegocio().getId());
+							tarjetaResponse.setCliente(cliente);
+							tarjetaResponse.setItems(items);
+							negocioResponse.getVentas().add(tarjetaResponse);
+							
+						}else if(venta instanceof VentaEfectivo) {
+							
+							VentaEfectivoResponse efectivoResponse = new VentaEfectivoResponse();
+							VentaEfectivo ventaEfectivo = (VentaEfectivo) venta;
+							efectivoResponse.setId(ventaEfectivo.getId());
+							efectivoResponse.setFecha(ventaEfectivo.getFecha().toString());
+							efectivoResponse.setImporteFinal(ventaEfectivo.importeFinal());
+							efectivoResponse.setIdNegocio(ventaEfectivo.getNegocio().getId());
+							efectivoResponse.setCliente(cliente);
+							efectivoResponse.setItems(items);
+							negocioResponse.getVentas().add(efectivoResponse);
+							
+						}
+				
+					}
+				}
+				
+				
+			}
+		}).register();
+		
+		mapperFactory.classMap(NegocioInsertRequest.class, Negocio.class)
+		.customize(new CustomMapper<NegocioInsertRequest, Negocio>() {
+			public void mapAtoB(final NegocioInsertRequest negocioInsertRequest, final Negocio negocio, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for negocioInsertRequest --> Negocio #### ");
+				negocio.setName(negocioInsertRequest.getName());
+			}
+		}).register();
+		
+		mapperFactory.classMap(NegocioUpdateRequest.class, Negocio.class)
+		.customize(new CustomMapper<NegocioUpdateRequest, Negocio>() {
+			public void mapAtoB(final NegocioUpdateRequest negocioUpdateRequest, final Negocio negocio, final MappingContext context) {
+				LOGGER.info(" #### Custom mapping for negocioInsertRequest --> Negocio #### ");
+				negocio.setName(negocioUpdateRequest.getName());
+			}
+		}).register();
 		
 		// CLIENTE
 
@@ -135,6 +257,7 @@ public class OrikaConfiguration {
 			public void mapAtoB(final ItemUpdateRequest itemUpdateRequest, final Item item, final MappingContext context) {
 				LOGGER.info(" #### Custom mapping for itemUpdateRequest --> Item #### ");
 				item.setCantidad(itemUpdateRequest.getCantidad());
+				//item.getPrenda().setStock(item);
 			}
 		}).register();
 
@@ -145,13 +268,16 @@ public class OrikaConfiguration {
 				PrendaResponse prendaResponse = PrendaResponse.builder()
 						.id(item.getPrenda().getId())
 						.descripcion(item.getPrenda().getDescripcion())
+						.estado(item.getPrenda().getEstado().getDescripcion())
 						.tipo(item.getPrenda().getTipo().getDescripcion())
 						.precioBase(item.getPrenda().getPrecioBase())
+						.cantidad(item.getPrenda().getCantidad())
 						.build();
 				itemResponse.setId(item.getId());
 				itemResponse.setCantidad(item.getCantidad());
 				itemResponse.setPrenda(prendaResponse);
 				itemResponse.setImporte(item.importe());
+				
 			}
 		}).register();		
 		
@@ -189,7 +315,7 @@ public class OrikaConfiguration {
 				
 				ventaResponse.setId(venta.getId());
 				ventaResponse.setCliente(cliente);
-				ventaResponse.setNegocio(negocio);
+				ventaResponse.setIdNegocio(negocio.getId());
 
 				DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
 				String fechaStr = formatearFecha.format(venta.getFecha());
@@ -199,11 +325,17 @@ public class OrikaConfiguration {
 				
 				ventaResponse.setItems(new ArrayList<ItemResponse>());
 				for (Item item : venta.getItems()) {
+							
 					PrendaResponse prendaResponse = PrendaResponse.builder()
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.tipo(item.getPrenda().getTipo().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
+							.precioFinal(item.getPrenda().getPrecioFinal())
+							.cantidad(item.getPrenda().getCantidad())
+
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())
@@ -246,14 +378,13 @@ public class OrikaConfiguration {
 						.nombre(venta.getCliente().getNombre())
 						.apellido(venta.getCliente().getApellido())
 						.build();
-				
 				NegocioResponse negocio = NegocioResponse.builder()
 						.id(venta.getNegocio().getId())
 						.build();
 				
 				ventaResponse.setId(venta.getId());
 				ventaResponse.setCliente(cliente);
-				ventaResponse.setNegocio(negocio);
+				ventaResponse.setIdNegocio(negocio.getId());
 
 				DateFormat formatearFecha = new SimpleDateFormat(Constantes.FORMATO_FECHA);
 				String fechaStr = formatearFecha.format(venta.getFecha());
@@ -267,7 +398,10 @@ public class OrikaConfiguration {
 							.id(item.getPrenda().getId())
 							.descripcion(item.getPrenda().getDescripcion())
 							.tipo(item.getPrenda().getTipo().getDescripcion())
+							.estado(item.getPrenda().getEstado().getDescripcion())
 							.precioBase(item.getPrenda().getPrecioBase())
+							.precioFinal(item.getPrenda().getPrecioFinal())
+							.cantidad(item.getPrenda().getCantidad())							
 							.build();
 					ItemResponse itemResponse = ItemResponse.builder()
 					.id(item.getId())

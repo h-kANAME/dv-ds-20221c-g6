@@ -69,7 +69,7 @@
 											<td th:text="${item.prenda.descripcion}">Prenda</td>
 											<td th:text="${item.importe}" class="number">Importe</td>
 											<td>
-												<a th:href="@{'/tienda/item/edit/' + ${item.id}}">Editar</a>
+												<a th:href="@{'/tienda/ventas/'+${venta.id}+'/item/edit/' + ${item.id}}">Editar</a>
 												&nbsp;&nbsp;&nbsp;
 												<a th:href="@{'/tienda/item/delete/' + ${item.id}}">Borrar</a>
 											</td>

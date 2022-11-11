@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.edu.davinci.dvds20221cg6.controller.rest.TiendaAppRest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaInsertRequest;
 import ar.edu.davinci.dvds20221cg6.controller.request.PrendaUpdateRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.StockAddRequest;
+import ar.edu.davinci.dvds20221cg6.controller.request.StockRemoveRequest;
 import ar.edu.davinci.dvds20221cg6.controller.response.PrendaResponse;
 import ar.edu.davinci.dvds20221cg6.domain.Prenda;
+import ar.edu.davinci.dvds20221cg6.domain.Stock;
 import ar.edu.davinci.dvds20221cg6.exception.BusinessException;
 import ar.edu.davinci.dvds20221cg6.service.PrendaService;
 import ma.glasnost.orika.MapperFacade;
@@ -200,6 +203,7 @@ public class PrendaControllerRest extends TiendaAppRest {
 			prendaModificar.setEstado(prendaNuevo.getEstado());
 			prendaModificar.setPrecioBase(prendaNuevo.getPrecioBase());
 			prendaModificar.setPrecioFinal(prendaNuevo.getPrecioFinal());
+
 			// Grabar el Prenda Nuevo en Prenda a Modificar
 			try {
 				prendaModificar = service.update(prendaModificar);
@@ -228,6 +232,123 @@ public class PrendaControllerRest extends TiendaAppRest {
 			e.printStackTrace();
 		}
 
+		return new ResponseEntity<>(prendaResponse, HttpStatus.CREATED);
+	}
+
+	@PutMapping("/prendas/{id}/stocks/añadir")
+	public ResponseEntity<Object> añadirCantidadAlStock(@PathVariable("id") Long id, @RequestBody StockAddRequest stockData){
+		
+		Prenda prendaModificar = null;
+		Stock newStock = null;
+		PrendaResponse prendaResponse = null;
+		
+		try {
+			newStock = mapper.map(stockData, Stock.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		try {
+			prendaModificar = service.findById(id);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+		if(Objects.nonNull(newStock)) {
+			prendaModificar.agregarStock(newStock.getCantidad());
+			
+			try {
+				prendaModificar = service.update(prendaModificar);
+			}catch(BusinessException e){			
+				LOGGER.error(e.getMessage());
+				e.printStackTrace();
+				return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+			}catch(Exception e) {
+				LOGGER.error(e.getMessage());
+				
+				e.printStackTrace();
+				
+				return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+			}
+			
+		}else {
+			LOGGER.error("The Stock to modify is null");
+			
+			return new ResponseEntity<>(null, HttpStatus.CREATED);
+		}
+		
+		try {
+			prendaResponse = mapper.map(prendaModificar, PrendaResponse.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(prendaResponse, HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/prendas/{id}/stocks/remover")
+	public ResponseEntity<Object> removerCantidadAlStock(@PathVariable("id") Long id, @RequestBody StockRemoveRequest stockData){
+		
+		Prenda prendaModificar = null;
+		Stock newStock = null;
+		PrendaResponse prendaResponse = null;
+		
+		try {
+			newStock = mapper.map(stockData, Stock.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		try {
+			prendaModificar = service.findById(id);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+		if(Objects.nonNull(newStock)) {
+			if(newStock.getCantidad() <= prendaModificar.getCantidad()) {
+				prendaModificar.descontarStock(newStock.getCantidad());
+				
+				try {
+					prendaModificar = service.update(prendaModificar);
+				}catch(BusinessException e){			
+					LOGGER.error(e.getMessage());
+					e.printStackTrace();
+					return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+				}catch(Exception e) {
+					LOGGER.error(e.getMessage());
+					
+					e.printStackTrace();
+					
+					return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+				}
+			}else {
+				LOGGER.error("El Stock no tiene la cantidad de prendas...");
+				return new ResponseEntity<>(null, HttpStatus.CREATED);
+			}
+			
+		}else {
+			LOGGER.error("The Stock to modify is null");
+			
+			return new ResponseEntity<>(null, HttpStatus.CREATED);
+		}
+		
+		try {
+			prendaResponse = mapper.map(prendaModificar, PrendaResponse.class);
+		}catch(Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
 		return new ResponseEntity<>(prendaResponse, HttpStatus.CREATED);
 	}
 
