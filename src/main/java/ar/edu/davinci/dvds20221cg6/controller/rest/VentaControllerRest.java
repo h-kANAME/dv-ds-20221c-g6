@@ -36,6 +36,7 @@ import ar.edu.davinci.dvds20221cg6.service.VentaService;
 import ma.glasnost.orika.MapperFacade;
 @CrossOrigin("*")
 @RestController
+
 public class VentaControllerRest extends TiendaAppRest{
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(VentaControllerRest.class);

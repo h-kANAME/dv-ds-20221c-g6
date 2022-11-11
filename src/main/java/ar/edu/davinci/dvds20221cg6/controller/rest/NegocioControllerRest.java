@@ -102,7 +102,7 @@ public class NegocioControllerRest extends TiendaAppRest{
 		return new ResponseEntity<>(negocioResponse, HttpStatus.OK);
 	}
 	
-	@GetMapping(path = "/negocios/{id}/profit")
+	@PostMapping(path = "/negocios/{id}/profit")
 	public ResponseEntity<Object> getNegocio(@PathVariable Long id, @RequestBody NegocioDateRequest datosFecha){
 		LOGGER.info("lista al negocio solicitado");
 		
