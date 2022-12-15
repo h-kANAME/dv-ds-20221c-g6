@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 public class Prenda  implements Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8791033026571491633L;
 
@@ -53,37 +53,41 @@ public class Prenda  implements Serializable {
 	// Configuramos por JPA el nombre de la columna
 	@Column(name = "prd_id")
 	private Long id;
-	
+
 	@Column(name = "prd_descripcion", nullable = false)
 	private String descripcion;
-	
+
 	@Column(name = "prd_tipo_prenda")
 	@Enumerated(EnumType.STRING)
 	private TipoPrenda tipo;
-	
+
 	@Column(name = "prd_estado_prenda")
 	@Enumerated(EnumType.STRING)
 	private EstadoPrenda estado;
-	
+
 	@Column(name = "prd_precio_base")
 	private BigDecimal precioBase;
-	
+
 	@Column(name = "prd_precio_final")
-	private BigDecimal precioFinal;	
-	
+	private BigDecimal precioFinal;
+
 	@JsonIgnore
 	@OneToOne(targetEntity = Stock.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval  = true)
 	@JoinColumn(name = "prd_stock_id", referencedColumnName="stk_id", nullable = false)
 	private Stock stock;
-	
+
 	@JsonIgnore
 	@Transient
 	private EstadoPrendaStrategy stateStrategy;
-	
+
+//	public BigDecimal getPrecioFinal() {
+//		return estado.getStrategy().obtenerPrecioVenta(precioBase);
+//	}
+
 	public BigDecimal getPrecioBase() {
 		return precioBase;
 	}
-	
+
 	public Integer getCantidad() {
 		return stock.getCantidad();
 	}
@@ -91,10 +95,10 @@ public class Prenda  implements Serializable {
 	public void agregarStock(Integer cantidad) {
 		stock.agregarStock(cantidad);
 	}
-	
+
 	public void descontarStock(Integer cantidad) {
 		stock.descontarStock(cantidad);
 	}
 
-	
+
 }
